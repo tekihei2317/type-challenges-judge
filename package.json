@@ -5,12 +5,14 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "emulators": "firebase emulators:start",
     "check-format": "prettier --check .",
     "lint": "eslint --ext .js,.ts,.tsx .",
     "validate": "npm run check-format && npm run lint",
     "preview": "vite preview"
   },
   "dependencies": {
+    "firebase": "^9.8.1",
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
   },
@@ -26,6 +28,7 @@
     "eslint-plugin-jsx-a11y": "^6.5.1",
     "eslint-plugin-react": "^7.29.4",
     "eslint-plugin-react-hooks": "^4.5.0",
+    "firebase-tools": "^10.9.2",
     "prettier": "^2.6.2",
     "typescript": "^4.6.3",
     "vite": "^2.9.9"
