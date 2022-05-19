@@ -26,7 +26,7 @@ export const ProblemLayout = () => {
       <Text fontSize="2xl" fontWeight={'bold'}>
         Pick
       </Text>
-      <Tabs variant={'enclosed'} onChange={handleTabChange} mt={4} mb={4}>
+      <Tabs variant={'enclosed'} onChange={handleTabChange} mt={8} mb={4}>
         <TabList>
           {tabs.map((tab) => (
             <Tab key={tab.name}>{tab.name}</Tab>

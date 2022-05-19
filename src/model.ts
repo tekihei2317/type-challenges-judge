@@ -1,6 +1,5 @@
 export type User = {
-  id: string
-  name: string
+  screenName: string
 }
 
 export type ProblemDifficulty = 'Easy' | 'Medium' | 'Hard' | 'Extreme'
