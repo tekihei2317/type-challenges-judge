@@ -4,7 +4,12 @@ import './index.css'
 import { AppProvider } from './providers'
 import { AppRoutes } from './routes'
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+const root = document.getElementById('root')
+if (root === null) {
+  throw new Error('Root element not found')
+}
+
+ReactDOM.createRoot(root).render(
   <React.StrictMode>
     <AppProvider>
       <AppRoutes />
