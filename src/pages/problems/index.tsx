@@ -1,12 +1,11 @@
 import { Text, Stack, Button, Wrap, Container } from '@chakra-ui/react'
 import { useState } from 'react'
-import './App.css'
 
 type Problem = {
   name: string
 }
 
-const App = () => {
+export const ProblemsPage = () => {
   const [problems] = useState<Problem[]>([
     { name: 'Pick' },
     { name: 'Readonly' },
@@ -62,5 +61,3 @@ const App = () => {
     </Container>
   )
 }
-
-export default App

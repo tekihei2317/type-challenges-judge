@@ -1,13 +1,18 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App'
 import './index.css'
-import { ChakraProvider } from '@chakra-ui/react'
+import { AppProvider } from './components/AppProvider'
+import { AppRoutes } from './components/AppRoutes'
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+const root = document.getElementById('root')
+if (root === null) {
+  throw new Error('Root element not found')
+}
+
+ReactDOM.createRoot(root).render(
   <React.StrictMode>
-    <ChakraProvider>
-      <App />
-    </ChakraProvider>
+    <AppProvider>
+      <AppRoutes />
+    </AppProvider>
   </React.StrictMode>
 )
