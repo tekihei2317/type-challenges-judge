@@ -1,5 +1,5 @@
 import { Route, Routes } from 'react-router-dom'
-import { ProblemLayout } from '../components/ProblemLayout'
+import { ProblemLayout } from './ProblemLayout'
 import { IndexPage } from '../pages'
 import { ProblemsPage } from '../pages/problems'
 import { ProblemPage } from '../pages/problems/[problemId]'

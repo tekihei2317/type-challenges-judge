@@ -5,7 +5,7 @@ import {
   signOut,
 } from 'firebase/auth'
 import { useContext, useMemo } from 'react'
-import { FirebaseContext, UserContext } from '../contexts'
+import { FirebaseContext, UserContext } from '../utils/context'
 import { User } from '../model'
 import { writeUser } from '../use-cases/write-user'
 
