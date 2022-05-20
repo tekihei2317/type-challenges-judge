@@ -31,7 +31,7 @@ type ProfileMenuProps = {
 }
 const ProfileMenu = ({ user, handleLogout }: ProfileMenuProps) => {
   return (
-    <Menu>
+    <Menu placement={'bottom-end'}>
       <MenuButton as={Button}>{user?.screenName}</MenuButton>
       <MenuList>
         <MenuItem>プロフィール</MenuItem>
@@ -56,9 +56,9 @@ export const DefaultLayout = ({ children }: DefaultLayoutProps) => {
               Type Challenges Judge
             </Text>
             {isLoggedIn ? (
-              <LoginMenu handleLogin={handleLogin} />
-            ) : (
               <ProfileMenu user={user} handleLogout={handleLogout} />
+            ) : (
+              <LoginMenu handleLogin={handleLogin} />
             )}
           </Flex>
         </Container>

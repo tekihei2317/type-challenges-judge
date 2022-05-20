@@ -23,3 +23,7 @@ export type Submission = {
   commentary?: string
   createdAt: Date
 }
+
+export const collectionName = {
+  users: 'users',
+}

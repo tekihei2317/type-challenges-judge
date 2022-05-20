@@ -5,6 +5,7 @@ import { ChakraProvider } from '@chakra-ui/react'
 import { BrowserRouter } from 'react-router-dom'
 import { auth } from '../utils/firebase'
 import { onAuthStateChanged } from 'firebase/auth'
+import { findUser } from '../use-cases/find-user'
 
 type AppProvierProps = {
   children: React.ReactNode
@@ -13,9 +14,11 @@ type AppProvierProps = {
 export const AppProvider = ({ children }: AppProvierProps) => {
   const [user, setUser] = useState<User>()
 
-  onAuthStateChanged(auth, (firebaseUser) => {
+  onAuthStateChanged(auth, async (firebaseUser) => {
     if (firebaseUser) {
       // sign in
+      const user = await findUser(firebaseUser.uid)
+      setUser(user)
     } else {
       // sign out
       setUser(undefined)
