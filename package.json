@@ -19,7 +19,8 @@
     "framer-motion": "^6",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "react-router-dom": "6"
+    "react-router-dom": "6",
+    "utility-types": "^3.10.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.0",
