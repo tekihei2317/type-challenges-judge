@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { User } from '../model'
 import { FirebaseContext, UserContext } from '../utils/context'
 import { ChakraProvider } from '@chakra-ui/react'
@@ -14,16 +14,18 @@ type AppProvierProps = {
 export const AppProvider = ({ children }: AppProvierProps) => {
   const [user, setUser] = useState<User>()
 
-  onAuthStateChanged(auth, async (firebaseUser) => {
-    if (firebaseUser) {
-      // sign in
-      const user = await findUser(firebaseUser.uid)
-      setUser(user)
-    } else {
-      // sign out
-      setUser(undefined)
-    }
-  })
+  useEffect(() => {
+    onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        // sign in
+        const currentUser = await findUser(firebaseUser.uid)
+        setUser(currentUser)
+      } else {
+        // sign out
+        setUser(undefined)
+      }
+    })
+  }, [])
 
   return (
     <ChakraProvider>
