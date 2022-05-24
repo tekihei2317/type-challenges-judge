@@ -11,6 +11,7 @@ import {
 } from '@chakra-ui/react'
 import { useAuth } from '../hooks/useAuth'
 import { User } from '../model'
+import { Link } from 'react-router-dom'
 
 type LoginMenuProps = {
   handleLogin: () => void
@@ -52,9 +53,12 @@ export const DefaultLayout = ({ children }: DefaultLayoutProps) => {
       <Box py={'2'} borderBottom={'1px'} borderColor={'gray.300'} mb={'4'}>
         <Container maxW={'container.xl'}>
           <Flex justify={'space-between'}>
-            <Text fontSize="2xl" fontWeight={'bold'}>
-              Type Challenges Judge
-            </Text>
+            <Link to="/">
+              <Text fontSize="2xl" fontWeight={'bold'}>
+                Type Challenges Judge
+              </Text>
+            </Link>
+
             {isLoggedIn ? (
               <ProfileMenu user={user} handleLogout={handleLogout} />
             ) : (
