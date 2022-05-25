@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "update-problems": "ts-node ./update-problems.ts"
+  },
   "devDependencies": {
     "ts-node": "^10.8.0",
     "typescript": "^4.6.4"
