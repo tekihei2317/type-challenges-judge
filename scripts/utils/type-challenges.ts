@@ -1,4 +1,5 @@
 import { DeepPartial } from 'utility-types'
+import { Problem } from '../../src/model'
 
 export interface QuizMetaInfo {
   title: string

@@ -9,8 +9,6 @@ export type Problem = {
   title: string
   content: string
   difficulty: ProblemDifficulty
-  githubUrl?: string
-  playgroundUrl?: string
 }
 
 export type SubmissionStatus = 'Judging' | 'Accepted' | 'Wrong Answer'
