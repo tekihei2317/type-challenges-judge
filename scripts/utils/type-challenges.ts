@@ -1,6 +1,6 @@
 import { DeepPartial } from 'utility-types'
-import { Problem } from '../../src/model'
 
+// https://github.com/type-challenges/type-challenges/blob/main/scripts/types.ts
 export interface QuizMetaInfo {
   title: string
   author: {
