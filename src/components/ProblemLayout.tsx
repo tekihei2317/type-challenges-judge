@@ -1,13 +1,30 @@
 import { Container, Tab, Tabs, Text, TabList } from '@chakra-ui/react'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Outlet, useNavigate, useParams } from 'react-router-dom'
+import { fetchProblem } from '../use-cases/fetch-problem'
+import { Problem } from '../model'
 
 type Tab = {
   name: string
   path: string
 }
 
+export type ProblemLayoutContext = {
+  problem?: Problem
+}
+
 export const ProblemLayout = () => {
-  const problemId = 1
+  const { problemId } = useParams()
+
+  const [problem, setProblem] = useState<Problem | undefined>()
+
+  useEffect(() => {
+    const loadData = async () => {
+      if (problemId === undefined) return
+      setProblem(await fetchProblem(problemId))
+    }
+    loadData()
+  }, [problemId])
 
   const basePath = `/problems/${problemId}`
   const tabs: Tab[] = [
@@ -23,17 +40,17 @@ export const ProblemLayout = () => {
 
   return (
     <Container maxW={'container.xl'}>
-      <Text fontSize="2xl" fontWeight={'bold'}>
-        Pick
+      <Text fontSize="xl" fontWeight={'bold'} mt={8}>
+        {problem?.title}
       </Text>
-      <Tabs variant={'enclosed'} onChange={handleTabChange} mt={8} mb={4}>
+      <Tabs variant={'enclosed'} onChange={handleTabChange} mt={6} mb={4}>
         <TabList>
           {tabs.map((tab) => (
             <Tab key={tab.name}>{tab.name}</Tab>
           ))}
         </TabList>
       </Tabs>
-      <Outlet />
+      <Outlet context={{ problem }} />
     </Container>
   )
 }
