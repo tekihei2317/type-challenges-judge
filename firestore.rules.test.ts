@@ -1,7 +1,7 @@
 import * as fs from 'fs'
 import { collectionName } from './src/model'
 import { doc, setDoc } from 'firebase/firestore'
-import { describe, it } from 'vitest'
+import { describe, it, beforeEach } from 'vitest'
 import {
   assertFails,
   assertSucceeds,
@@ -9,9 +9,11 @@ import {
 } from '@firebase/rules-unit-testing'
 
 const testEnv = await initializeTestEnvironment({
-  projectId: 'test-project-type-challenges-judge',
+  projectId: 'demo-type-challenges-judge',
   firestore: {
     rules: fs.readFileSync('firestore.rules', 'utf-8'),
+    host: 'localhost',
+    port: 8080,
   },
 })
 
@@ -22,24 +24,28 @@ const userDB = authenticatedContext.firestore()
 const unauthenticatedContext = testEnv.unauthenticatedContext()
 const guestDB = unauthenticatedContext.firestore()
 
+beforeEach(async () => {
+  await testEnv.clearFirestore()
+})
+
 describe('ユーザー登録', () => {
-  it('認証済みでなければ登録できないこと', () => {
+  it('認証済みでなければ登録できないこと', async () => {
     const docRef = doc(guestDB, collectionName.users, uid)
-    assertFails(setDoc(docRef, { screenName: 'test' }))
+    await assertFails(setDoc(docRef, { screenName: 'test' }))
   })
 
-  it('認証済みであれば登録できること', () => {
+  it('認証済みであれば登録できること', async () => {
     const docRef = doc(userDB, collectionName.users, uid)
-    assertSucceeds(setDoc(docRef, { screenName: 'test' }))
+    await assertSucceeds(setDoc(docRef, { screenName: 'test' }))
   })
 
-  it('ユーザー名が39文字であれば登録できること', () => {
+  it('ユーザー名が39文字であれば登録できること', async () => {
     const docRef = doc(userDB, collectionName.users, uid)
-    assertSucceeds(setDoc(docRef, { screenName: 'a'.repeat(39) }))
+    await assertSucceeds(setDoc(docRef, { screenName: 'a'.repeat(39) }))
   })
 
-  it('ユーザー名が40文字であれば登録できないこと', () => {
+  it('ユーザー名が40文字であれば登録できないこと', async () => {
     const docRef = doc(userDB, collectionName.users, uid)
-    assertFails(setDoc(docRef, { screenName: 'a'.repeat(40) }))
+    await assertFails(setDoc(docRef, { screenName: 'a'.repeat(40) }))
   })
 })

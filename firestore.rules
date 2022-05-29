@@ -1,8 +1,22 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    function isAuthenticated() {
+      return request.auth != null
+    }
+
+    function isUserAuthenticated(userId) {
+      return isAuthenticated() && userId == request.auth.uid
+    }
+
+    function isValidUser(user) {
+      return 'screenName' in user && user.screenName.size() <= 39
+    }
+
     match /users/{userId} {
       allow get: if request.auth != null && userId == request.auth.uid
+      allow create: if isUserAuthenticated(userId) && isValidUser(request.resource.data)
+      allow update: if isUserAuthenticated(userId) && isValidUser(request.resource.data)
     }
   }
 }
