@@ -9,7 +9,8 @@
     "check-format": "prettier --check .",
     "lint": "eslint --ext .js,.ts,.tsx .",
     "validate": "npm run check-format && npm run lint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:rules": "firebase emulators:exec --only firestore vitest"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.0.0",
@@ -25,6 +26,7 @@
     "utility-types": "^3.10.0"
   },
   "devDependencies": {
+    "@firebase/rules-unit-testing": "^2.0.2",
     "@types/eslint": "^8.4.2",
     "@types/prettier": "^2.6.1",
     "@types/react": "^18.0.0",
@@ -42,6 +44,7 @@
     "firebase-tools": "^10.9.2",
     "prettier": "^2.6.2",
     "typescript": "^4.6.3",
-    "vite": "^2.9.9"
+    "vite": "^2.9.9",
+    "vitest": "^0.13.0"
   }
 }
