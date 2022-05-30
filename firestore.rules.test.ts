@@ -1,6 +1,6 @@
 import * as fs from 'fs'
-import { collectionName } from './src/model'
-import { doc, setDoc } from 'firebase/firestore'
+import { collectionName as CN, UnvalidatedSubmission } from './src/model'
+import { addDoc, collection, doc, setDoc } from 'firebase/firestore'
 import { describe, it, beforeEach } from 'vitest'
 import {
   assertFails,
@@ -30,22 +30,47 @@ beforeEach(async () => {
 
 describe('ユーザー登録', () => {
   it('認証済みでなければ登録できないこと', async () => {
-    const docRef = doc(guestDB, collectionName.users, uid)
+    const docRef = doc(guestDB, CN.users, uid)
     await assertFails(setDoc(docRef, { screenName: 'test' }))
   })
 
   it('認証済みであれば登録できること', async () => {
-    const docRef = doc(userDB, collectionName.users, uid)
+    const docRef = doc(userDB, CN.users, uid)
     await assertSucceeds(setDoc(docRef, { screenName: 'test' }))
   })
 
   it('ユーザー名が39文字であれば登録できること', async () => {
-    const docRef = doc(userDB, collectionName.users, uid)
+    const docRef = doc(userDB, CN.users, uid)
     await assertSucceeds(setDoc(docRef, { screenName: 'a'.repeat(39) }))
   })
 
   it('ユーザー名が40文字であれば登録できないこと', async () => {
-    const docRef = doc(userDB, collectionName.users, uid)
+    const docRef = doc(userDB, CN.users, uid)
     await assertFails(setDoc(docRef, { screenName: 'a'.repeat(40) }))
+  })
+})
+
+describe('提出の登録', () => {
+  const validSubmissionData: UnvalidatedSubmission = {
+    status: 'Judging',
+    problemId: 'problem_id',
+    code: 'code',
+    codeLength: 4,
+  }
+
+  it('認証済みでなければ登録できないこと', async () => {
+    const collectionRef = collection(guestDB, CN.users, uid, CN.submissinos)
+    await assertFails(addDoc(collectionRef, validSubmissionData))
+  })
+
+  it('自分のユーザードキュメントに提出を追加できること', async () => {
+    const collectionRef = collection(userDB, CN.users, uid, CN.submissinos)
+    await assertSucceeds(addDoc(collectionRef, validSubmissionData))
+  })
+
+  it('他の人のユーザードキュメントに提出を追加できないこと', async () => {
+    const otherUid = 'test_user_2'
+    const collectionRef = collection(userDB, CN.users, otherUid, CN.submissinos)
+    await assertFails(addDoc(collectionRef, validSubmissionData))
   })
 })

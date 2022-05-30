@@ -13,10 +13,23 @@ service cloud.firestore {
       return 'screenName' in user && user.screenName.size() <= 39
     }
 
+    function isValidSubmission(submission) {
+      return submission.size() == 4
+        && 'problemId' in submission && submission.problemId is string // TODO: 問題が存在することのバリデーション
+        && 'status' in submission && submission.status == 'Judging'
+        && 'code' in submission && submission.code is string && submission.code.size() < 10000
+        && 'codeLength' in submission && submission.codeLength == submission.code.size()
+    }
+
     match /users/{userId} {
       allow get: if request.auth != null && userId == request.auth.uid
       allow create: if isUserAuthenticated(userId) && isValidUser(request.resource.data)
       allow update: if isUserAuthenticated(userId) && isValidUser(request.resource.data)
+
+      match /submissions/{submissionId} {
+        allow get: if true
+        allow create: if isUserAuthenticated(userId) && isValidSubmission(request.resource.data)
+      }
     }
   }
 }

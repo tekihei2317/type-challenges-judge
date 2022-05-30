@@ -15,15 +15,25 @@ export type SubmissionStatus = 'Judging' | 'Accepted' | 'Wrong Answer'
 
 export type Submission = {
   id: string
-  problemId: string
   user: User
+  problemId: string
+  code: string
   status: SubmissionStatus
-  codeSize: number
+  codeLength: number
   commentary?: string
   createdAt: Date
+}
+
+export type UnvalidatedSubmission = {
+  problemId: string
+  code: string
+  status: 'Judging'
+  codeLength: number
+  // createdAt: Date
 }
 
 export const collectionName = {
   users: 'users',
   problems: 'problems',
+  submissinos: 'submissions',
 }
