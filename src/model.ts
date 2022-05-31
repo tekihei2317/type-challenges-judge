@@ -1,4 +1,9 @@
+export type UserDocument = {
+  screenName: string
+}
+
 export type User = {
+  userId: string
   screenName: string
 }
 
@@ -12,6 +17,13 @@ export type Problem = {
 }
 
 export type SubmissionStatus = 'Judging' | 'Accepted' | 'Wrong Answer'
+
+export type UserSubmsisionDocument = {
+  code: string
+  codeLength: number
+  problemId: string
+  status: SubmissionStatus
+}
 
 export type Submission = {
   id: string
