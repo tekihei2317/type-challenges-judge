@@ -3,13 +3,14 @@ import React, { useMemo, useState } from 'react'
 import { createSubmission } from '../../../use-cases/create-submission'
 import { useAuth } from '../../../hooks/useAuth'
 import { UnvalidatedSubmission } from '../../../model'
-import { useOutletContext } from 'react-router-dom'
+import { useOutletContext, useNavigate } from 'react-router-dom'
 import { ProblemLayoutContext } from '../../../components/ProblemLayout'
 
 export const SubmitPage = () => {
   const [code, setCode] = useState<string>('')
   const { user } = useAuth()
   const { problem } = useOutletContext<ProblemLayoutContext>()
+  const navigate = useNavigate()
 
   const handleInputChange = (event: React.FormEvent<HTMLTextAreaElement>) => {
     setCode(event.currentTarget.value)
@@ -28,7 +29,10 @@ export const SubmitPage = () => {
       status: 'Judging',
     }
 
-    await createSubmission(user.userId, submission)
+    const userSubmission = await createSubmission(user.userId, submission)
+    if (userSubmission !== undefined) {
+      navigate(`/problems/${problem?.id}/submissions/${userSubmission.id}`)
+    }
   }
 
   const canSubmit = useMemo(() => code.length > 0, [code])

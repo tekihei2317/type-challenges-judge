@@ -59,18 +59,18 @@ describe('提出の登録', () => {
   }
 
   it('認証済みでなければ登録できないこと', async () => {
-    const collectionRef = collection(guestDB, CN.users, uid, CN.submissinos)
+    const collectionRef = collection(guestDB, CN.users, uid, CN.submissions)
     await assertFails(addDoc(collectionRef, validSubmissionData))
   })
 
   it('自分のユーザードキュメントに提出を追加できること', async () => {
-    const collectionRef = collection(userDB, CN.users, uid, CN.submissinos)
+    const collectionRef = collection(userDB, CN.users, uid, CN.submissions)
     await assertSucceeds(addDoc(collectionRef, validSubmissionData))
   })
 
   it('他の人のユーザードキュメントに提出を追加できないこと', async () => {
     const otherUid = 'test_user_2'
-    const collectionRef = collection(userDB, CN.users, otherUid, CN.submissinos)
+    const collectionRef = collection(userDB, CN.users, otherUid, CN.submissions)
     await assertFails(addDoc(collectionRef, validSubmissionData))
   })
 })

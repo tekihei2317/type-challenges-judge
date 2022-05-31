@@ -18,7 +18,8 @@ export type Problem = {
 
 export type SubmissionStatus = 'Judging' | 'Accepted' | 'Wrong Answer'
 
-export type UserSubmsisionDocument = {
+export type UserSubmissionDocument = {
+  id?: string
   code: string
   codeLength: number
   problemId: string
@@ -47,5 +48,5 @@ export type UnvalidatedSubmission = {
 export const collectionName = {
   users: 'users',
   problems: 'problems',
-  submissinos: 'submissions',
+  submissions: 'submissions',
 }
