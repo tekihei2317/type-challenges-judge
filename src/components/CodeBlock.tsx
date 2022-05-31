@@ -7,7 +7,7 @@ import {
   ReactMarkdownNames,
 } from 'react-markdown/lib/ast-to-react'
 
-const CodeComponent: CodeComponent | ReactMarkdownNames = ({
+const MarkdownCodeComponent: CodeComponent | ReactMarkdownNames = ({
   inline,
   className,
   children,
@@ -37,6 +37,8 @@ export const CodeBlock = ({ code }: CodeBlockProps) => {
   return code === undefined ? (
     <></>
   ) : (
-    <ReactMarkdown components={{ code: CodeComponent }}>{code}</ReactMarkdown>
+    <ReactMarkdown components={{ code: MarkdownCodeComponent }}>
+      {code}
+    </ReactMarkdown>
   )
 }

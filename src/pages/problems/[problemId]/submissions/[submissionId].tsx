@@ -5,6 +5,7 @@ import { CodeBlock } from '../../../../components/CodeBlock'
 import { useAuth } from '../../../../hooks/useAuth'
 import { UserSubmissionDocument } from '../../../../model'
 import { fetchSubmission } from '../../../../use-cases/fetch-submission'
+import { changeToCodeMarkdown } from '../../../../utils/code-block'
 
 export const SubmissionPage = () => {
   const [submission, setSubmission] = useState<UserSubmissionDocument>()
@@ -28,7 +29,11 @@ export const SubmissionPage = () => {
 
   return (
     <Stack>
-      <CodeBlock code={submission?.code} />
+      {submission?.code === undefined ? (
+        <></>
+      ) : (
+        <CodeBlock code={changeToCodeMarkdown(submission.code, 'ts')} />
+      )}
     </Stack>
   )
 }
