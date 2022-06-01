@@ -29,12 +29,12 @@ export type UserSubmissionDocument = {
 export type Submission = {
   id: string
   user: User
-  problemId: string
+  problem: Problem
   code: string
   status: SubmissionStatus
   codeLength: number
   commentary?: string
-  createdAt: Date
+  // createdAt: Date
 }
 
 export type UnvalidatedSubmission = {
