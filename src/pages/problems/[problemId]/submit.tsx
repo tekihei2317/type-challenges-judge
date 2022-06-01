@@ -5,6 +5,7 @@ import { useAuth } from '../../../hooks/useAuth'
 import { UnvalidatedSubmission } from '../../../model'
 import { useOutletContext, useNavigate } from 'react-router-dom'
 import { ProblemLayoutContext } from '../../../components/ProblemLayout'
+import { serverTimestamp, Timestamp } from 'firebase/firestore'
 
 export const SubmitPage = () => {
   const [code, setCode] = useState<string>('')
@@ -27,6 +28,7 @@ export const SubmitPage = () => {
       code,
       codeLength: code.length,
       status: 'Judging',
+      createdAt: serverTimestamp() as Timestamp,
     }
 
     const userSubmission = await createSubmission(user.userId, submission)

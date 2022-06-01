@@ -60,8 +60,7 @@ export const SubmissionPage = () => {
                     提出日時
                   </Th>
                   <Td textAlign={'center'} borderColor={tableBorderColor}>
-                    {/* 2022-06-01 19:58:31 */}
-                    TODO
+                    {submission.createdAt.toDate().toLocaleString()}
                   </Td>
                 </Tr>
                 <Tr>

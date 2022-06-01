@@ -1,3 +1,5 @@
+import { Timestamp } from 'firebase/firestore'
+
 export type UserDocument = {
   screenName: string
 }
@@ -24,6 +26,7 @@ export type UserSubmissionDocument = {
   codeLength: number
   problemId: string
   status: SubmissionStatus
+  createdAt: Timestamp
 }
 
 export type Submission = {
@@ -34,7 +37,7 @@ export type Submission = {
   status: SubmissionStatus
   codeLength: number
   commentary?: string
-  // createdAt: Date
+  createdAt: Timestamp
 }
 
 export type UnvalidatedSubmission = {
@@ -42,7 +45,7 @@ export type UnvalidatedSubmission = {
   code: string
   status: 'Judging'
   codeLength: number
-  // createdAt: Date
+  createdAt: Timestamp
 }
 
 export const collectionName = {
