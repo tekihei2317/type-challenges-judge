@@ -1,6 +1,13 @@
 import * as fs from 'fs'
 import { collectionName as CN, UnvalidatedSubmission } from './src/model'
-import { addDoc, collection, doc, setDoc } from 'firebase/firestore'
+import {
+  addDoc,
+  collection,
+  doc,
+  serverTimestamp,
+  setDoc,
+  Timestamp,
+} from 'firebase/firestore'
 import { describe, it, beforeEach } from 'vitest'
 import {
   assertFails,
@@ -56,6 +63,7 @@ describe('提出の登録', () => {
     problemId: 'problem_id',
     code: 'code',
     codeLength: 4,
+    createdAt: serverTimestamp() as Timestamp,
   }
 
   it('認証済みでなければ登録できないこと', async () => {

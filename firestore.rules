@@ -14,11 +14,12 @@ service cloud.firestore {
     }
 
     function isValidSubmission(submission) {
-      return submission.size() == 4
+      return submission.size() == 5
         && 'problemId' in submission && submission.problemId is string // TODO: 問題が存在することのバリデーション
         && 'status' in submission && submission.status == 'Judging'
         && 'code' in submission && submission.code is string && submission.code.size() < 10000
         && 'codeLength' in submission && submission.codeLength == submission.code.size()
+        && 'createdAt' in submission && submission.createdAt == request.time
     }
 
     match /users/{userId} {
