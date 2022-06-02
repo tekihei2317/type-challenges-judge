@@ -29,6 +29,7 @@ export const useAuth = () => {
         if (userInfo === null) return
 
         const user: User = {
+          userId: result.user.uid,
           screenName: userInfo.username as string,
         }
         writeUser(result.user.uid, user)
