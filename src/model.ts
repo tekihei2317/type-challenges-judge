@@ -59,6 +59,7 @@ export type ProblemSubmissionDocument = {
   id?: string
   status: SubmissionStatus
   user: User
+  order: number
   createdAt: Timestamp
 }
 

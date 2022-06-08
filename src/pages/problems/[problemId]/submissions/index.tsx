@@ -6,11 +6,12 @@ import {
   Th,
   Thead,
   Tr,
+  Link,
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { ProblemSubmissionDocument } from '../../../../model'
 import { fetchProblemSubmissions } from '../../../../use-cases/fetch-problem-submissions'
-import { useOutletContext } from 'react-router-dom'
+import { Link as ReactLink, useOutletContext } from 'react-router-dom'
 import { ProblemLayoutContext } from '../../../../components/ProblemLayout'
 import { SubmissionStatusBadge } from '../../../../components/SubmissionStatusBadge'
 
@@ -23,8 +24,8 @@ export const SubmissionsPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const submissionsData = await fetchProblemSubmissions(problem.id)
-      setSubmissions(submissionsData.slice(0, 20))
+      const documents = await fetchProblemSubmissions(problem.id)
+      setSubmissions(documents)
     }
 
     fetchData()
@@ -44,16 +45,32 @@ export const SubmissionsPage = () => {
             </Tr>
             {submissions.map((submission) => {
               return (
-                <Tr key={submission.id}>
+                <Tr key={submission.order}>
                   <Td>{submission.createdAt.toDate().toLocaleString()}</Td>
-                  <Td>{problem.title}</Td>
+                  <Td>
+                    <Link
+                      as={ReactLink}
+                      to={`/problems/${problem.id}`}
+                      color={'blue.600'}
+                    >
+                      {problem.title}
+                    </Link>
+                  </Td>
                   <Td>{submission.user.screenName}</Td>
                   <Td>
                     <SubmissionStatusBadge>
                       {submission.status}
                     </SubmissionStatusBadge>
                   </Td>
-                  <Td>{submission.id}</Td>
+                  <Td>
+                    <Link
+                      as={ReactLink}
+                      to={`/problems/${problem.id}/submissions/${submission.id}}`}
+                      color={'blue.600'}
+                    >
+                      詳細
+                    </Link>
+                  </Td>
                 </Tr>
               )
             })}

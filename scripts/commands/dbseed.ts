@@ -10,7 +10,7 @@ function problemSeeder(): Promise<void> {
 }
 
 function problemSubmissionSeeder() {
-  const dummySubmission: ProblemSubmissionDocument = {
+  const dummySubmission: Omit<ProblemSubmissionDocument, 'order'> = {
     id: '1',
     status: 'Judging',
     user: { userId: 'test', screenName: 'test' },
@@ -18,12 +18,12 @@ function problemSubmissionSeeder() {
   }
 
   return Promise.all(
-    [...Array(100)].map(() => {
+    [...Array(100)].map((_, index) => {
       return db
         .collection('problems')
         .doc('00013-warm-hello-world')
         .collection('submissions')
-        .add(dummySubmission)
+        .add({ ...dummySubmission, order: index })
     })
   )
 }
