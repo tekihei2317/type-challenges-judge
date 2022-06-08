@@ -10,7 +10,7 @@ type Tab = {
 }
 
 export type ProblemLayoutContext = {
-  problem?: Problem
+  problem: Problem
 }
 
 export const ProblemLayout = () => {
@@ -50,7 +50,7 @@ export const ProblemLayout = () => {
           ))}
         </TabList>
       </Tabs>
-      <Outlet context={{ problem }} />
+      {problem !== undefined && <Outlet context={{ problem }} />}
     </Container>
   )
 }

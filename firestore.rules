@@ -35,6 +35,11 @@ service cloud.firestore {
 
     match /problems/{problemId} {
       allow read: if true
+
+      match /submissions/{submissionId} {
+        allow read: if true
+        allow create: if true
+      }
     }
   }
 }

@@ -15,6 +15,6 @@ export const app = initializeApp(firebaseConfig)
 export const auth = getAuth(app)
 export const db = getFirestore(app)
 
-if (import.meta.env.MODE === 'development') {
+if (['development', 'test'].includes(import.meta.env.MODE)) {
   connectFirestoreEmulator(db, 'localhost', 8080)
 }

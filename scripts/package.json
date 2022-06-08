@@ -4,7 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "update-problems": "ts-node ./update-problems.ts"
+    "update-problems": "ts-node ./commands/update-problems.ts",
+    "seed": "FIRESTORE_EMULATOR_HOST=localhost:8080 ts-node ./commands/dbseed.ts"
   },
   "devDependencies": {
     "ts-node": "^10.8.0",

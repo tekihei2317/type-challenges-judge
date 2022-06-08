@@ -23,5 +23,3 @@ export async function updateProblems() {
 
   console.log('問題を更新しました')
 }
-
-updateProblems()
