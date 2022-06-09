@@ -57,11 +57,17 @@ export type UserSubmissionDocument = {
 
 export type ProblemSubmissionDocument = {
   id?: string
+  code: string
+  codeLength: number
   status: SubmissionStatus
   user: User
   order: number
   createdAt: Timestamp
 }
+
+export type ConvertToProbleSubmission = (
+  userSubmission: UserSubmissionDocument
+) => ProblemSubmissionDocument
 
 export type ProblemSubmissionResource = {
   id?: string

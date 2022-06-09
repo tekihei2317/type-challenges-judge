@@ -12,6 +12,8 @@ function problemSeeder(): Promise<void> {
 function problemSubmissionSeeder() {
   const dummySubmission: Omit<ProblemSubmissionDocument, 'order'> = {
     id: '1',
+    code: 'type HelloWorld = string',
+    codeLength: 24,
     status: 'Judging',
     user: { userId: 'test', screenName: 'test' },
     createdAt: FieldValue.serverTimestamp() as Timestamp, // TODO:
