@@ -7,33 +7,58 @@ import {
   Thead,
   Tr,
   Link,
+  Flex,
+  Button,
 } from '@chakra-ui/react'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { ProblemSubmissionDocument } from '../../../../model'
 import { fetchProblemSubmissions } from '../../../../use-cases/fetch-problem-submissions'
 import { Link as ReactLink, useOutletContext } from 'react-router-dom'
 import { ProblemLayoutContext } from '../../../../components/ProblemLayout'
 import { SubmissionStatusBadge } from '../../../../components/SubmissionStatusBadge'
+import { generatePages, PageType } from '../../../../utils/pagination'
+import { countProblemSubmissions } from '../../../../use-cases/count-problem-submissions'
 
 export const SubmissionsPage = () => {
   const [submissions, setSubmissions] = useState<ProblemSubmissionDocument[]>(
     []
   )
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const [totalPage, setTotalPage] = useState<number>(1)
+  const pages = useMemo(
+    () => generatePages(currentPage, totalPage),
+    [currentPage, totalPage]
+  )
+  const handlePageClick = (page: PageType) => {
+    if (page === 'LEFT') {
+      setCurrentPage(currentPage - 2)
+    } else if (page === 'RIGHT') {
+      setCurrentPage(currentPage + 2)
+    } else {
+      setCurrentPage(page)
+    }
+  }
 
   const { problem } = useOutletContext<ProblemLayoutContext>()
 
   useEffect(() => {
     const fetchData = async () => {
-      const documents = await fetchProblemSubmissions(problem.id)
+      const [submissionsCount, documents] = await Promise.all([
+        countProblemSubmissions(problem.id),
+        fetchProblemSubmissions(problem.id, currentPage),
+      ])
       setSubmissions(documents)
+      setTotalPage(Math.ceil(submissionsCount / 20))
+
+      console.log(submissionsCount)
     }
 
     fetchData()
-  }, [problem.id])
+  }, [problem.id, currentPage])
 
   return (
-    <Stack>
-      <TableContainer>
+    <Stack pb={24}>
+      <TableContainer mb={8}>
         <Table>
           <Thead>
             <Tr>
@@ -77,6 +102,18 @@ export const SubmissionsPage = () => {
           </Thead>
         </Table>
       </TableContainer>
+      <Flex gap="1">
+        {pages.map((page) => (
+          <Button
+            key={page}
+            colorScheme={'blue'}
+            variant={page === currentPage ? 'solid' : 'outline'}
+            onClick={() => handlePageClick(page)}
+          >
+            {page === 'LEFT' ? '«' : page === 'RIGHT' ? '»' : page}
+          </Button>
+        ))}
+      </Flex>
     </Stack>
   )
 }
