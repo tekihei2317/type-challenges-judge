@@ -50,7 +50,7 @@ async function calculateNewSubmissionOrder(problemId: string): Promise<number> {
     .collection('problems')
     .doc(problemId)
     .collection('submissions')
-    .orderBy('order')
+    .orderBy('order', 'desc')
     .limit(1)
   const querySnapshot = await query.get()
 

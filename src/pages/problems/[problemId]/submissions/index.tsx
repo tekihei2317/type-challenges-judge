@@ -45,16 +45,14 @@ export const SubmissionsPage = () => {
     const fetchData = async () => {
       const [submissionsCount, documents] = await Promise.all([
         countProblemSubmissions(problem.id),
-        fetchProblemSubmissions(problem.id, currentPage),
+        fetchProblemSubmissions(problem.id, currentPage, 20, totalPage),
       ])
       setSubmissions(documents)
       setTotalPage(Math.ceil(submissionsCount / 20))
-
-      console.log(submissionsCount)
     }
 
     fetchData()
-  }, [problem.id, currentPage])
+  }, [problem.id, currentPage, totalPage])
 
   return (
     <Stack pb={24}>
@@ -70,7 +68,7 @@ export const SubmissionsPage = () => {
             </Tr>
             {submissions.map((submission) => {
               return (
-                <Tr key={submission.order}>
+                <Tr key={submission.id}>
                   <Td>{submission.createdAt.toDate().toLocaleString()}</Td>
                   <Td>
                     <Link
@@ -90,7 +88,7 @@ export const SubmissionsPage = () => {
                   <Td>
                     <Link
                       as={ReactLink}
-                      to={`/problems/${problem.id}/submissions/${submission.id}}`}
+                      to={`/problems/${problem.id}/submissions/${submission.id}`}
                       color={'blue.600'}
                     >
                       詳細

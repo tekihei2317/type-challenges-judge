@@ -11,20 +11,21 @@ import { db } from '../utils/firebase'
 
 export async function fetchProblemSubmissions(
   problemId: string,
-  page = 1,
-  pageLimit = 20
+  page: number,
+  pageLimit: number,
+  totalPage: number
 ): Promise<ProblemSubmissionDocument[]> {
   const submissionsRef = collection(db, 'problems', problemId, 'submissions')
   const submissionsQuery = query(
     submissionsRef,
-    orderBy('order'),
-    startAt((page - 1) * pageLimit),
-    limit(20)
+    orderBy('order', 'desc'),
+    startAt((totalPage - page + 1) * pageLimit),
+    limit(pageLimit)
   )
   const querySnapshot = await getDocs(submissionsQuery)
 
   return querySnapshot.docs.map((doc) => {
     const submissionDocument = doc.data() as ProblemSubmissionDocument
-    return submissionDocument
+    return { ...submissionDocument, id: doc.id }
   })
 }
