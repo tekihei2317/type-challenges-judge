@@ -7,9 +7,11 @@ jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - run: yarn run deploy
         working-directory: functions
   deploy_rules:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - run: firebase deploy --only firestore:rules
