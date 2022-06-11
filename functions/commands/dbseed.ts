@@ -9,7 +9,7 @@ function problemSeeder(): Promise<void> {
   return updateProblems()
 }
 
-function problemSubmissionSeeder() {
+async function problemSubmissionSeeder(): Promise<void> {
   const dummySubmission: Omit<ProblemSubmissionDocument, 'order'> = {
     id: '1',
     code: 'type HelloWorld = string',
@@ -19,7 +19,7 @@ function problemSubmissionSeeder() {
     createdAt: FieldValue.serverTimestamp() as Timestamp, // TODO:
   }
 
-  return Promise.all(
+  await Promise.all(
     [...Array(100)].map((_, index) => {
       return db
         .collection('problems')
@@ -28,6 +28,7 @@ function problemSubmissionSeeder() {
         .add({ ...dummySubmission, order: index })
     })
   )
+  console.log('提出シーダーを実行しました')
 }
 
 async function mainSeeder() {

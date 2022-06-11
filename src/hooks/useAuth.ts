@@ -30,7 +30,8 @@ export const useAuth = () => {
 
         const user: User = {
           userId: result.user.uid,
-          screenName: userInfo.username as string,
+          // FIXME: エミュレータでは名前が取得できなかったため、適当な値を入れている
+          screenName: userInfo.username ?? 'test_user',
         }
         writeUser(result.user.uid, user)
 
