@@ -1,5 +1,5 @@
-name: Deploy to Firebase
-on:
+name: Deploy to Firebase on merge
+'on':
   push:
     branches:
       - main
@@ -8,10 +8,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: yarn run deploy
-        working-directory: functions
-  deploy_rules:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - run: firebase deploy --only firestore:rules
+      - run: yarn install
+      - run: yarn run test:rules
+      - run: yarn run build
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_TYPE_CHALLENGES_JUDGE }}'
+          channelId: live
+          projectId: type-challenges-judge
+      - run: firebase deploy --only firestore:rules,functions
