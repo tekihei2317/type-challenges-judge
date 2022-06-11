@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "update-problems": "ts-node ./commands/update-problems.ts",
-    "seed": "FIRESTORE_EMULATOR_HOST=localhost:8080 ts-node ./commands/dbseed.ts"
+    "dbseed": "FIRESTORE_EMULATOR_HOST=localhost:8080 ts-node ./commands/dbseed.ts",
+    "deploy": "tsc && firebase deploy --only functions"
   },
   "devDependencies": {
     "ts-node": "^10.8.0",
