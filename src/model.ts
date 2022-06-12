@@ -53,6 +53,7 @@ export type UserSubmissionDocument = {
   codeLength: number
   problemId: string
   status: SubmissionStatus
+  diagnostics?: string[]
   createdAt: Timestamp
 }
 

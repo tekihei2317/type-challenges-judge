@@ -1,4 +1,5 @@
 import * as ts from 'typescript'
+import * as tmp from 'tmp'
 import * as fs from 'fs'
 
 type Diagnostic = string
@@ -11,8 +12,16 @@ export async function compileSolution(
   solution: string,
   testCase: string
 ): Promise<Diagnostic[]> {
-  const tempFilePath = `temp/${Math.random().toString(32).slice(2)}.ts`
-  fs.writeFileSync(tempFilePath, [solution, testCase].join('\n'))
+  const tempDir = tmp.dirSync()
+  const tempFile = tmp.fileSync({ dir: tempDir.name, postfix: '.ts' })
+
+  // @typ-challenges/utilsが必要なので、tempディレクトリにsymbolic linkを置く
+  fs.symlinkSync(
+    `${process.cwd()}/node_modules`,
+    `${tempDir.name}/node_modules`
+  )
+
+  fs.writeFileSync(tempFile.name, [solution, testCase].join('\n'))
 
   const options: ts.CompilerOptions = {
     noImplicitAny: true,
@@ -20,10 +29,8 @@ export async function compileSolution(
     module: ts.ModuleKind.CommonJS,
     noEmit: true,
   }
-  const program = ts.createProgram([tempFilePath], options)
+  const program = ts.createProgram([tempFile.name], options)
   const diagnostics = ts.getPreEmitDiagnostics(program)
-
-  fs.unlinkSync(tempFilePath)
 
   return diagnostics.map((diagnostic) =>
     ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n')
@@ -31,5 +38,5 @@ export async function compileSolution(
 }
 
 export function calculateStatus(diagnostics: Diagnostic[]): JudgeStatus {
-  return diagnostics.length > 0 ? 'Accepted' : 'Wrong Answer'
+  return diagnostics.length > 0 ? 'Wrong Answer' : 'Accepted'
 }

@@ -67,8 +67,9 @@ async function calculateNewSubmissionOrder(problemId: string): Promise<number> {
 /**
  * 回答が提出されたときに、提出を問題ドキュメントに追加する
  */
-const handleSubmission = functions.firestore
-  .document('/users/{userId}/submissions/{submissionId}')
+const handleSubmission = functions
+  .region('asia-northeast1')
+  .firestore.document('/users/{userId}/submissions/{submissionId}')
   .onCreate(async (snapshot, context) => {
     const _submission = snapshot.data() as UserSubmissionDocument
     const submission: UserSubmissionDocument = {
