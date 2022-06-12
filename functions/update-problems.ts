@@ -10,12 +10,17 @@ export async function updateProblems() {
 
     const title = quiz.info?.en?.title
     if (title === undefined) return
+    if (quiz.tests === undefined) {
+      console.log(`問題${quiz.path}のテストがありません`)
+      return
+    }
 
     const problem: Problem = {
       id: quiz.path,
       title,
       content: quiz.readme.en,
       difficulty: quiz.difficulty,
+      tests: quiz.tests,
     }
 
     db.collection(collectionName.problems).doc(problem.id).set(problem)

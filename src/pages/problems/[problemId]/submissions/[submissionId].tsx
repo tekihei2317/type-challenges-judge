@@ -7,6 +7,11 @@ import {
   Th,
   Tr,
   Link,
+  Box,
+  UnorderedList,
+  ListItem,
+  Container,
+  Text,
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { Link as ReactLink, useParams } from 'react-router-dom'
@@ -40,81 +45,100 @@ export const SubmissionPage = () => {
   const tableBorderColor = 'gray.200'
 
   return (
-    <Stack>
-      {submission?.code === undefined ? (
-        <></>
-      ) : (
-        <Stack gap={4}>
-          <CodeBlock code={changeToCodeMarkdown(submission.code, 'ts')} />
-          <TableContainer>
-            <Table sx={{ border: '1px solid blak' }}>
-              <Tbody>
-                <Tr borderTop="1px" borderTopColor={tableBorderColor}>
-                  <Th
-                    w="48"
-                    fontSize={'sm'}
-                    borderRight="1px"
-                    borderRightColor={tableBorderColor}
-                    borderColor={tableBorderColor}
-                  >
-                    提出日時
-                  </Th>
-                  <Td textAlign={'center'} borderColor={tableBorderColor}>
-                    {submission.createdAt.toDate().toLocaleString()}
-                  </Td>
-                </Tr>
-                <Tr>
-                  <Th
-                    fontSize={'sm'}
-                    borderRight="1px"
-                    borderRightColor={tableBorderColor}
-                    borderColor={tableBorderColor}
-                  >
-                    問題
-                  </Th>
-                  <Td textAlign={'center'} borderColor={tableBorderColor}>
-                    <Link
-                      as={ReactLink}
-                      to={`/problems/${submission.problem.id}`}
-                      color={'blue.600'}
-                    >
-                      {submission.problem.title}
-                    </Link>
-                  </Td>
-                </Tr>
-                <Tr>
-                  <Th
-                    fontSize={'sm'}
-                    borderRight="1px"
-                    borderRightColor={tableBorderColor}
-                    borderColor={tableBorderColor}
-                  >
-                    ユーザー
-                  </Th>
-                  <Td textAlign={'center'} borderColor={tableBorderColor}>
-                    {submission.user.screenName}
-                  </Td>
-                </Tr>
-                <Tr>
-                  <Th
-                    fontSize={'sm'}
-                    borderRight="1px"
-                    borderRightColor={tableBorderColor}
-                    borderColor={tableBorderColor}
-                  >
-                    ステータス
-                  </Th>
-                  <Td textAlign={'center'} borderColor={tableBorderColor}>
-                    <SubmissionStatusBadge>
-                      {submission.status}
-                    </SubmissionStatusBadge>
-                  </Td>
-                </Tr>
-              </Tbody>
-            </Table>
-          </TableContainer>
-        </Stack>
+    <Container maxW={'container.xl'} mt={8}>
+      {submission !== undefined && (
+        <Text fontSize="xl" fontWeight={'bold'}>
+          提出詳細
+        </Text>
       )}
-    </Stack>
+      <Stack mt={4}>
+        {submission?.code === undefined ? (
+          <></>
+        ) : (
+          <Stack gap={4}>
+            <CodeBlock code={changeToCodeMarkdown(submission.code, 'ts')} />
+            <TableContainer>
+              <Table sx={{ border: '1px solid blak' }}>
+                <Tbody>
+                  <Tr borderTop="1px" borderTopColor={tableBorderColor}>
+                    <Th
+                      w="48"
+                      fontSize={'sm'}
+                      borderRight="1px"
+                      borderRightColor={tableBorderColor}
+                      borderColor={tableBorderColor}
+                    >
+                      提出日時
+                    </Th>
+                    <Td textAlign={'center'} borderColor={tableBorderColor}>
+                      {submission.createdAt.toDate().toLocaleString()}
+                    </Td>
+                  </Tr>
+                  <Tr>
+                    <Th
+                      fontSize={'sm'}
+                      borderRight="1px"
+                      borderRightColor={tableBorderColor}
+                      borderColor={tableBorderColor}
+                    >
+                      問題
+                    </Th>
+                    <Td textAlign={'center'} borderColor={tableBorderColor}>
+                      <Link
+                        as={ReactLink}
+                        to={`/problems/${submission.problem.id}`}
+                        color={'blue.600'}
+                      >
+                        {submission.problem.title}
+                      </Link>
+                    </Td>
+                  </Tr>
+                  <Tr>
+                    <Th
+                      fontSize={'sm'}
+                      borderRight="1px"
+                      borderRightColor={tableBorderColor}
+                      borderColor={tableBorderColor}
+                    >
+                      ユーザー
+                    </Th>
+                    <Td textAlign={'center'} borderColor={tableBorderColor}>
+                      {submission.user.screenName}
+                    </Td>
+                  </Tr>
+                  <Tr>
+                    <Th
+                      fontSize={'sm'}
+                      borderRight="1px"
+                      borderRightColor={tableBorderColor}
+                      borderColor={tableBorderColor}
+                    >
+                      ステータス
+                    </Th>
+                    <Td textAlign={'center'} borderColor={tableBorderColor}>
+                      <SubmissionStatusBadge>
+                        {submission.status}
+                      </SubmissionStatusBadge>
+                    </Td>
+                  </Tr>
+                </Tbody>
+              </Table>
+            </TableContainer>
+            {submission.diagnostics !== undefined &&
+              submission.diagnostics.length > 0 && (
+                <Box bg={'gray.100'} p={4} borderRadius={4}>
+                  {
+                    <UnorderedList>
+                      {submission.diagnostics.map((diagnostic, index) => (
+                        <ListItem key={index}>{diagnostic}</ListItem>
+                      ))}
+                    </UnorderedList>
+                  }
+                </Box>
+              )}
+          </Stack>
+        )}
+      </Stack>
+    </Container>
   )
 }

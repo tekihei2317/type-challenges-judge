@@ -12,6 +12,7 @@ export type Problem = {
   title: string
   content: string
   difficulty: ProblemDifficulty
+  tests: string
 }
 
 export type SubmissionStatus = 'Judging' | 'Accepted' | 'Wrong Answer'
@@ -23,6 +24,7 @@ export type Submission = {
   code: string
   status: SubmissionStatus
   codeLength: number
+  diagnostics?: string[]
   commentary?: string
   createdAt: Timestamp
 }
@@ -52,6 +54,7 @@ export type UserSubmissionDocument = {
   codeLength: number
   problemId: string
   status: SubmissionStatus
+  diagnostics?: string[]
   createdAt: Timestamp
 }
 
