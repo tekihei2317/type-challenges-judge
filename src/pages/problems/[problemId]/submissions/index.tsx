@@ -88,7 +88,7 @@ export const SubmissionsPage = () => {
                   <Td>
                     <Link
                       as={ReactLink}
-                      to={`/problems/${problem.id}/submissions/${submission.id}`}
+                      to={`/submissions/${submission.id}`}
                       color={'blue.600'}
                     >
                       詳細
