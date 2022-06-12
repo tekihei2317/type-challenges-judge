@@ -24,6 +24,7 @@ export type Submission = {
   code: string
   status: SubmissionStatus
   codeLength: number
+  diagnostics?: string[]
   commentary?: string
   createdAt: Timestamp
 }

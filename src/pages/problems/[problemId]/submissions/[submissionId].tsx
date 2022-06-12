@@ -7,6 +7,9 @@ import {
   Th,
   Tr,
   Link,
+  Box,
+  UnorderedList,
+  ListItem,
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { Link as ReactLink, useParams } from 'react-router-dom'
@@ -113,6 +116,18 @@ export const SubmissionPage = () => {
               </Tbody>
             </Table>
           </TableContainer>
+          {submission.diagnostics !== undefined &&
+            submission.diagnostics.length > 0 && (
+              <Box bg={'gray.100'} p={4} borderRadius={4}>
+                {
+                  <UnorderedList>
+                    {submission.diagnostics.map((diagnostic, index) => (
+                      <ListItem key={index}>{diagnostic}</ListItem>
+                    ))}
+                  </UnorderedList>
+                }
+              </Box>
+            )}
         </Stack>
       )}
     </Stack>
