@@ -15,12 +15,9 @@ export const AppRoutes = () => {
         <Route path="/problems/:problemId" element={<ProblemLayout />}>
           <Route path="submit" element={<SubmitPage />} />
           <Route path="submissions" element={<SubmissionsPage />} />
-          <Route
-            path="submissions/:submissionId"
-            element={<SubmissionPage />}
-          />
           <Route index element={<ProblemPage />} />
         </Route>
+        <Route path="/submissions/:submissionId" element={<SubmissionPage />} />
       </Routes>
     </DefaultLayout>
   )

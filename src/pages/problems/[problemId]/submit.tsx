@@ -1,4 +1,11 @@
-import { Box, Button, Stack, Textarea } from '@chakra-ui/react'
+import {
+  Alert,
+  AlertIcon,
+  Box,
+  Button,
+  Stack,
+  Textarea,
+} from '@chakra-ui/react'
 import React, { useMemo, useState } from 'react'
 import { createSubmission } from '../../../use-cases/create-submission'
 import { useAuth } from '../../../hooks/useAuth'
@@ -13,6 +20,8 @@ export const SubmitPage = () => {
   const { problem } = useOutletContext<ProblemLayoutContext>()
   const navigate = useNavigate()
 
+  const [isShowAlert, setIsShowAlert] = useState<boolean>(false)
+
   const handleInputChange = (event: React.FormEvent<HTMLTextAreaElement>) => {
     setCode(event.currentTarget.value)
   }
@@ -20,7 +29,8 @@ export const SubmitPage = () => {
   const handleSubmit = async () => {
     if (user === undefined) {
       // TODO: ログインしていないと提出できないようにする
-      throw new Error('Please login')
+      setIsShowAlert(true)
+      return
     }
 
     const submission: UnvalidatedSubmission = {
@@ -33,7 +43,7 @@ export const SubmitPage = () => {
 
     const userSubmission = await createSubmission(user.userId, submission)
     if (userSubmission !== undefined) {
-      navigate(`/problems/${problem?.id}/submissions/${userSubmission.id}`)
+      navigate(`/submissions/${userSubmission.id}`)
     }
   }
 
@@ -41,6 +51,12 @@ export const SubmitPage = () => {
 
   return (
     <Stack gap={2}>
+      {isShowAlert && (
+        <Alert status="warning" borderRadius={4}>
+          <AlertIcon />
+          提出するにはログインしてください
+        </Alert>
+      )}
       <Textarea onInput={handleInputChange} height={'xs'} />
       <Box>
         <Button
