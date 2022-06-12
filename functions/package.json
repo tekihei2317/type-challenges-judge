@@ -9,6 +9,7 @@
     "build": "tsc"
   },
   "devDependencies": {
+    "@type-challenges/utils": "^0.1.1",
     "ts-node": "^10.8.0",
     "typescript": "^4.6.4"
   },

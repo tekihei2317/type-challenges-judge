@@ -12,6 +12,7 @@ export type Problem = {
   title: string
   content: string
   difficulty: ProblemDifficulty
+  tests: string
 }
 
 export type SubmissionStatus = 'Judging' | 'Accepted' | 'Wrong Answer'
