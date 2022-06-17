@@ -1,18 +1,24 @@
 import admin from 'firebase-admin'
 import * as functions from 'firebase-functions'
-import { Problem, UserSubmissionDocument } from '../../src/model'
+import {
+  Problem,
+  ProblemDocument,
+  ProblemResultDocument,
+  UserSubmissionDocument,
+} from '../../src/model'
 import { updateSubmission } from './database/update-submission'
-import { compileSolution } from '../utils/judge'
+import { calculateStatus, compileSolution } from '../utils/judge'
+import { updateProblemResult } from './database/update-problem-result'
 
 /**
- * 問題のテストケースを取得する
+ * 問題を取得する
  */
-async function findTestCase(problemId: string): Promise<string> {
+async function findProblem(problemId: string): Promise<ProblemDocument> {
   const problem = (
     await admin.firestore().collection('problems').doc(problemId).get()
   ).data() as Problem
 
-  return problem.tests
+  return problem
 }
 
 /**
@@ -28,13 +34,16 @@ module.exports = functions
     const submissionId: string = context.params.submissionId
     const userId: string = context.params.userId
 
-    const testCase = await findTestCase(submission.problemId)
-    const diagnostics = await compileSolution(submission.code, testCase)
+    const problem = await findProblem(submission.problemId)
+    const diagnostics = await compileSolution(submission.code, problem.tests)
+    const userProblemResult: ProblemResultDocument = {
+      problem_id: problem.id,
+      status: calculateStatus(diagnostics),
+      problem_difficulty: problem.difficulty,
+    }
 
-    await updateSubmission(
-      userId,
-      submission.problemId,
-      submissionId,
-      diagnostics
-    )
+    await Promise.all([
+      updateSubmission(userId, submission.problemId, submissionId, diagnostics),
+      updateProblemResult(userId, userProblemResult),
+    ])
   })

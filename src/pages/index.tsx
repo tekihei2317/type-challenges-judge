@@ -1,15 +1,25 @@
 import { useState, useEffect, useMemo } from 'react'
 import { Container, Stack, Text, Wrap, Box } from '@chakra-ui/react'
-import { Problem, ProblemDifficulty } from '../model'
+import {
+  Problem,
+  ProblemDifficulty,
+  ProblemResultDocument,
+  ProblemResultStatus,
+} from '../model'
 import { fetchProblems } from '../use-cases/fetch-problems'
 import { Link } from 'react-router-dom'
+import { fetchProblemResults } from '../use-cases/fetch-problem-results'
+import { useAuth } from '../hooks/useAuth'
 
 const difficultyFilter =
   (difficulty: ProblemDifficulty) => (problem: Problem) =>
     problem.difficulty === difficulty
 
-type ProblemButtonProps = { problem: Problem }
-const ProblemButton = ({ problem }: ProblemButtonProps) => {
+type ProblemButtonProps = {
+  problem: Problem
+  status: ProblemResultStatus | undefined
+}
+const ProblemButton = ({ problem, status }: ProblemButtonProps) => {
   return (
     <Link to={`/problems/${problem.id}`}>
       <Box
@@ -23,6 +33,13 @@ const ProblemButton = ({ problem }: ProblemButtonProps) => {
         whiteSpace={'nowrap'}
         textOverflow={'ellipsis'}
         overflow={'hidden'}
+        background={
+          status === 'Accepted'
+            ? 'green.200'
+            : status === 'Wrong Answer'
+            ? 'yellow.100'
+            : undefined
+        }
       >
         {problem.title}
       </Box>
@@ -30,17 +47,37 @@ const ProblemButton = ({ problem }: ProblemButtonProps) => {
   )
 }
 
+type ProblemStatusMap = {
+  [problemId: string]: ProblemResultStatus
+}
+
 export const IndexPage = () => {
+  const { user } = useAuth()
   const [problems, setProblems] = useState<Problem[]>([])
+  const [problemResults, setProblemResults] = useState<ProblemResultDocument[]>(
+    []
+  )
+  const problemStatusMap = useMemo<ProblemStatusMap>(
+    () =>
+      problemResults.reduce((statusMap, result) => {
+        if (result.problem_id !== undefined) {
+          statusMap[result.problem_id] = result.status
+        }
+        return statusMap
+      }, {} as ProblemStatusMap),
+    [problemResults]
+  )
 
   useEffect(() => {
-    const loadData = async () => {
-      const problemsData = await fetchProblems()
-      setProblems(problemsData)
+    const loadData = () => {
+      fetchProblems().then((data) => setProblems(data))
+      if (user !== undefined) {
+        fetchProblemResults(user.userId).then((data) => setProblemResults(data))
+      }
     }
 
     loadData()
-  }, [])
+  }, [user])
 
   const warmupProblems = useMemo(
     () => problems.filter(difficultyFilter('warm')),
@@ -72,7 +109,11 @@ export const IndexPage = () => {
           </Text>
           <Wrap p={1}>
             {warmupProblems.map((problem) => (
-              <ProblemButton problem={problem} key={problem.id} />
+              <ProblemButton
+                problem={problem}
+                status={problemStatusMap[problem.id]}
+                key={problem.id}
+              />
             ))}
           </Wrap>
         </Stack>
@@ -82,7 +123,11 @@ export const IndexPage = () => {
           </Text>
           <Wrap p={1}>
             {easyProblems.map((problem) => (
-              <ProblemButton problem={problem} key={problem.id} />
+              <ProblemButton
+                problem={problem}
+                status={problemStatusMap[problem.id]}
+                key={problem.id}
+              />
             ))}
           </Wrap>
         </Stack>
@@ -92,7 +137,11 @@ export const IndexPage = () => {
           </Text>
           <Wrap p={1}>
             {mediumProblems.map((problem) => (
-              <ProblemButton problem={problem} key={problem.id} />
+              <ProblemButton
+                problem={problem}
+                status={problemStatusMap[problem.id]}
+                key={problem.id}
+              />
             ))}
           </Wrap>
         </Stack>
@@ -102,7 +151,11 @@ export const IndexPage = () => {
           </Text>
           <Wrap p={1}>
             {hardProblems.map((problem) => (
-              <ProblemButton problem={problem} key={problem.id} />
+              <ProblemButton
+                problem={problem}
+                status={problemStatusMap[problem.id]}
+                key={problem.id}
+              />
             ))}
           </Wrap>
         </Stack>
@@ -112,7 +165,11 @@ export const IndexPage = () => {
           </Text>
           <Wrap p={1}>
             {extremeProblems.map((problem) => (
-              <ProblemButton problem={problem} key={problem.id} />
+              <ProblemButton
+                problem={problem}
+                status={problemStatusMap[problem.id]}
+                key={problem.id}
+              />
             ))}
           </Wrap>
         </Stack>
