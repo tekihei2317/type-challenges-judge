@@ -1,24 +1,51 @@
 import { useState, useEffect, useMemo } from 'react'
-import { Container, Stack, Text, Wrap, Button } from '@chakra-ui/react'
-import { Problem, ProblemDifficulty } from '../model'
+import { Container } from '@chakra-ui/react'
+import {
+  Problem,
+  ProblemDifficulty,
+  ProblemResultDocument,
+  ProblemResultStatus,
+} from '../model'
 import { fetchProblems } from '../use-cases/fetch-problems'
-import { Link } from 'react-router-dom'
+import { fetchProblemResults } from '../use-cases/fetch-problem-results'
+import { useAuth } from '../hooks/useAuth'
+import { ProblemList } from '../components/ProblemsList'
 
 const difficultyFilter =
   (difficulty: ProblemDifficulty) => (problem: Problem) =>
     problem.difficulty === difficulty
 
+export type ProblemStatusMap = {
+  [problemId: string]: ProblemResultStatus
+}
+
 export const IndexPage = () => {
+  const { user } = useAuth()
   const [problems, setProblems] = useState<Problem[]>([])
+  const [problemResults, setProblemResults] = useState<ProblemResultDocument[]>(
+    []
+  )
+  const problemStatusMap = useMemo<ProblemStatusMap>(
+    () =>
+      problemResults.reduce((statusMap, result) => {
+        if (result.problem_id !== undefined) {
+          statusMap[result.problem_id] = result.status
+        }
+        return statusMap
+      }, {} as ProblemStatusMap),
+    [problemResults]
+  )
 
   useEffect(() => {
-    const loadData = async () => {
-      const problemsData = await fetchProblems()
-      setProblems(problemsData)
+    const loadData = () => {
+      fetchProblems().then((data) => setProblems(data))
+      if (user !== undefined) {
+        fetchProblemResults(user.userId).then((data) => setProblemResults(data))
+      }
     }
 
     loadData()
-  }, [])
+  }, [user])
 
   const warmupProblems = useMemo(
     () => problems.filter(difficultyFilter('warm')),
@@ -43,68 +70,14 @@ export const IndexPage = () => {
 
   return (
     <Container maxW={'container.xl'}>
-      <Stack spacing={8} mt={8}>
-        <Stack p={1}>
-          <Text fontSize={'xl'} fontWeight={'bold'}>
-            Warmup
-          </Text>
-          <Wrap p={1}>
-            {warmupProblems.map((problem, index) => (
-              <Link to={`/problems/${problem.id}`} key={index}>
-                <Button>{problem.title}</Button>
-              </Link>
-            ))}
-          </Wrap>
-        </Stack>
-        <Stack>
-          <Text fontSize={'xl'} fontWeight={'bold'}>
-            Easy
-          </Text>
-          <Wrap p={1}>
-            {easyProblems.map((problem, index) => (
-              <Link to={`/problems/${problem.id}`} key={index}>
-                <Button>{problem.title}</Button>
-              </Link>
-            ))}
-          </Wrap>
-        </Stack>
-        <Stack>
-          <Text fontSize={'xl'} fontWeight={'bold'}>
-            Medium
-          </Text>
-          <Wrap p={1}>
-            {mediumProblems.map((problem, index) => (
-              <Link to={`/problems/${problem.id}`} key={index}>
-                <Button>{problem.title}</Button>
-              </Link>
-            ))}
-          </Wrap>
-        </Stack>
-        <Stack>
-          <Text fontSize={'xl'} fontWeight={'bold'}>
-            Hard
-          </Text>
-          <Wrap p={1}>
-            {hardProblems.map((problem, index) => (
-              <Link to={`/problems/${problem.id}`} key={index}>
-                <Button>{problem.title}</Button>
-              </Link>
-            ))}
-          </Wrap>
-        </Stack>
-        <Stack p={1}>
-          <Text fontSize={'xl'} fontWeight={'bold'}>
-            Extreme
-          </Text>
-          <Wrap p={1}>
-            {extremeProblems.map((problem, index) => (
-              <Link to={`/problems/${problem.id}`} key={index}>
-                <Button>{problem.title}</Button>
-              </Link>
-            ))}
-          </Wrap>
-        </Stack>
-      </Stack>
+      <ProblemList
+        warmupProblems={warmupProblems}
+        easyProblems={easyProblems}
+        mediumProblems={mediumProblems}
+        hardProblems={hardProblems}
+        extremeProblems={extremeProblems}
+        statusMap={problemStatusMap}
+      />
     </Container>
   )
 }

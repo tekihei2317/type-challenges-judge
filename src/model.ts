@@ -68,6 +68,22 @@ export type ProblemSubmissionDocument = {
   createdAt: Timestamp
 }
 
+export type ProblemResultStatus = 'Accepted' | 'Wrong Answer'
+
+export type ProblemResultDocument = {
+  problem_id?: string
+  status: ProblemResultStatus
+  problem_difficulty: ProblemDifficulty
+}
+
+export type ProblemDocument = {
+  id?: string
+  title: string
+  content: string
+  difficulty: ProblemDifficulty
+  tests: string
+}
+
 export type ConvertToProbleSubmission = (
   userSubmission: UserSubmissionDocument
 ) => ProblemSubmissionDocument

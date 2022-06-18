@@ -31,6 +31,10 @@ service cloud.firestore {
         allow get: if true
         allow create: if isUserAuthenticated(userId) && isValidSubmission(request.resource.data)
       }
+
+      match /problem_results/{problemId} {
+        allow read: if true
+      }
     }
 
     match /problems/{problemId} {

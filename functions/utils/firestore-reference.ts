@@ -17,3 +17,11 @@ export function problemSubmissionRef(problemId: string, submissionId: string) {
     .collection('submissions')
     .doc(submissionId)
 }
+
+export function userProblemResult(userId: string, problemId: string) {
+  return db
+    .collection('users')
+    .doc(userId)
+    .collection('problem_results')
+    .doc(problemId)
+}
