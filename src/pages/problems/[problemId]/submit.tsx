@@ -28,7 +28,6 @@ export const SubmitPage = () => {
 
   const handleSubmit = async () => {
     if (user === undefined) {
-      // TODO: ログインしていないと提出できないようにする
       setIsShowAlert(true)
       return
     }

@@ -11,18 +11,19 @@ import {
 } from '@chakra-ui/react'
 import { useAuth } from '../hooks/useAuth'
 import { User } from '../model'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
+import { useMemo } from 'react'
 
 type LoginMenuProps = {
   handleLogin: () => void
 }
 const LoginMenu = ({ handleLogin }: LoginMenuProps) => {
   return (
-    <Menu>
-      <MenuButton as={Button} onClick={handleLogin}>
+    <Box>
+      <Button variant={'outline'} onClick={handleLogin}>
         GitHubでログイン
-      </MenuButton>
-    </Menu>
+      </Button>
+    </Box>
   )
 }
 
@@ -42,15 +43,45 @@ const ProfileMenu = ({ user, handleLogout }: ProfileMenuProps) => {
   )
 }
 
+type NavigationLinkProps = {
+  name: string
+  path: string
+}
+
+const NavigationLink = ({ path, name }: NavigationLinkProps) => {
+  const location = useLocation()
+  const isActive = useMemo(() => location.pathname === path, [location, path])
+
+  return (
+    <Link to={path}>
+      {isActive ? (
+        <Text
+          fontWeight={'bold'}
+          pb={2}
+          borderBottomWidth={3}
+          borderBottomColor={'black'}
+        >
+          {name}
+        </Text>
+      ) : (
+        <Text fontWeight={'bold'} pb={2} color={'gray.500'}>
+          {name}
+        </Text>
+      )}
+    </Link>
+  )
+}
+
 type DefaultLayoutProps = {
   children: React.ReactNode
 }
+
 export const DefaultLayout = ({ children }: DefaultLayoutProps) => {
   const { user, isLoggedIn, handleLogin, handleLogout } = useAuth()
 
   return (
     <Box>
-      <Box py={'2'} borderBottom={'1px'} borderColor={'gray.300'} mb={'4'}>
+      <Box pt={'2'} borderBottom={'1px'} borderColor={'gray.300'} mb={'4'}>
         <Container maxW={'container.xl'}>
           <Flex justify={'space-between'}>
             <Link to="/">
@@ -64,6 +95,10 @@ export const DefaultLayout = ({ children }: DefaultLayoutProps) => {
             ) : (
               <LoginMenu handleLogin={handleLogin} />
             )}
+          </Flex>
+          <Flex gap={4} mt={4}>
+            <NavigationLink name={'Proglems'} path={'/'} />
+            <NavigationLink name={'Progress'} path={'/progress'} />
           </Flex>
         </Container>
       </Box>
