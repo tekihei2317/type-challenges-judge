@@ -26,7 +26,7 @@ async function findProblem(problemId: string): Promise<ProblemDocument> {
  */
 module.exports = functions
   .region('asia-northeast1')
-  .runWith({ memory: '1GB' })
+  .runWith({ memory: '4GB' })
   .firestore.document('/users/{userId}/submissions/{submissionId}')
   .onCreate(async (snapshot, context) => {
     const submission: UserSubmissionDocument =
