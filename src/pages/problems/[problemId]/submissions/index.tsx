@@ -7,8 +7,6 @@ import {
   Thead,
   Tr,
   Link,
-  Flex,
-  Button,
 } from '@chakra-ui/react'
 import { useEffect, useMemo, useState } from 'react'
 import { ProblemSubmissionDocument } from '../../../../model'
@@ -18,6 +16,7 @@ import { ProblemLayoutContext } from '../../../../components/ProblemLayout'
 import { SubmissionStatusBadge } from '../../../../components/SubmissionStatusBadge'
 import { generatePages, PageType } from '../../../../utils/pagination'
 import { countProblemSubmissions } from '../../../../use-cases/count-problem-submissions'
+import { Pagination } from '../../../../components/Pagination'
 
 export const SubmissionsPage = () => {
   const [submissions, setSubmissions] = useState<ProblemSubmissionDocument[]>(
@@ -100,18 +99,13 @@ export const SubmissionsPage = () => {
           </Thead>
         </Table>
       </TableContainer>
-      <Flex gap="1">
-        {pages.map((page) => (
-          <Button
-            key={page}
-            colorScheme={'blue'}
-            variant={page === currentPage ? 'solid' : 'outline'}
-            onClick={() => handlePageClick(page)}
-          >
-            {page === 'LEFT' ? '«' : page === 'RIGHT' ? '»' : page}
-          </Button>
-        ))}
-      </Flex>
+      {submissions.length > 0 && (
+        <Pagination
+          pages={pages}
+          currentPage={currentPage}
+          handlePageClick={handlePageClick}
+        />
+      )}
     </Stack>
   )
 }
