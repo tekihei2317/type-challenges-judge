@@ -3,20 +3,14 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
 import { useEffect, useState } from 'react'
 import { Pie } from 'react-chartjs-2'
 import { useAuth } from '../hooks/useAuth'
-import { ProblemDifficulty, ProblemResultDocument } from '../model'
 import { fetchProblemResults } from '../use-cases/fetch-problem-results'
+import { Progress, convertToProgress } from '../utils/progress'
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
-type Progress = {
-  difficulty: string
-  acceptedCount: number
-  wrongAnswerCount: number
-  totalCount: number
-}
-
 function progressToPieChartData(progress: Progress) {
   return {
+    labels: ['Accepted', 'Wrong Answer', 'Unchallenged'],
     datasets: [
       {
         data: [
@@ -35,35 +29,7 @@ function progressToPieChartData(progress: Progress) {
   }
 }
 
-function defaultProgress(difficulty: string): Progress {
-  return { difficulty, acceptedCount: 0, wrongAnswerCount: 0, totalCount: 10 }
-}
-
-function difficultyToIndex(difficulty: ProblemDifficulty) {
-  if (difficulty === 'warm') return 0
-  if (difficulty === 'easy') return 0
-  if (difficulty === 'medium') return 1
-  if (difficulty === 'hard') return 2
-  return 3
-}
-
-function convertToProgress(results: ProblemResultDocument[]): Progress[] {
-  const progressList = [
-    defaultProgress('easy'),
-    defaultProgress('medium'),
-    defaultProgress('hard'),
-    defaultProgress('extreme'),
-  ]
-
-  results.forEach((result) => {
-    const index = difficultyToIndex(result.problem_difficulty)
-    const prop =
-      result.status === 'Accepted' ? 'acceptedCount' : 'wrongAnswerCount'
-    progressList[index][prop]++
-  })
-
-  return progressList
-}
+const chartOptions = { plugins: { legend: { display: false } } }
 
 export const ProgressPage = () => {
   const { user } = useAuth()
@@ -87,7 +53,10 @@ export const ProgressPage = () => {
       ) : (
         <SimpleGrid minChildWidth={'160px'} spacing={12} mt="8">
           <Box>
-            <Pie data={progressToPieChartData(progressList[0])} />
+            <Pie
+              data={progressToPieChartData(progressList[0])}
+              options={chartOptions}
+            />
             <Stack mt="4">
               <Text align="center" fontWeight={'bold'} fontSize="lg">
                 Warmup & Easy
@@ -98,7 +67,10 @@ export const ProgressPage = () => {
             </Stack>
           </Box>
           <Box>
-            <Pie data={progressToPieChartData(progressList[1])} />
+            <Pie
+              data={progressToPieChartData(progressList[1])}
+              options={chartOptions}
+            />
             <Stack mt="4">
               <Text align="center" fontWeight={'bold'} fontSize="lg">
                 Medium
@@ -109,7 +81,10 @@ export const ProgressPage = () => {
             </Stack>
           </Box>
           <Box>
-            <Pie data={progressToPieChartData(progressList[2])} />
+            <Pie
+              data={progressToPieChartData(progressList[2])}
+              options={chartOptions}
+            />
             <Stack mt="4">
               <Text align="center" fontWeight={'bold'} fontSize="lg">
                 Hard
@@ -120,7 +95,10 @@ export const ProgressPage = () => {
             </Stack>
           </Box>
           <Box>
-            <Pie data={progressToPieChartData(progressList[3])} />
+            <Pie
+              data={progressToPieChartData(progressList[3])}
+              options={chartOptions}
+            />
             <Stack mt="4">
               <Text align="center" fontWeight={'bold'} fontSize="lg">
                 Extreme
