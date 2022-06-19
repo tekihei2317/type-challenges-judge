@@ -3,6 +3,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
 import { useEffect, useState } from 'react'
 import { Pie } from 'react-chartjs-2'
 import { useAuth } from '../hooks/useAuth'
+import { countProblemsByDifficulty } from '../use-cases/count-problems-by-difficulty'
 import { fetchProblemResults } from '../use-cases/fetch-problem-results'
 import { Progress, convertToProgress } from '../utils/progress'
 
@@ -36,11 +37,14 @@ export const ProgressPage = () => {
   const [progressList, setProgressList] = useState<Progress[]>([])
 
   useEffect(() => {
-    if (user !== undefined) {
-      fetchProblemResults(user.userId).then((documents) =>
-        setProgressList(convertToProgress(documents))
-      )
+    const setData = async () => {
+      const problemCounts = await countProblemsByDifficulty()
+      const documents =
+        user === undefined ? [] : await fetchProblemResults(user.userId)
+
+      setProgressList(convertToProgress(problemCounts, documents))
     }
+    setData()
   }, [user])
 
   return (

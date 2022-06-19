@@ -1,4 +1,5 @@
 import { ProblemDifficulty, ProblemResultDocument } from '../model'
+import { ProblemCounts } from '../use-cases/count-problems-by-difficulty'
 
 export type Progress = {
   difficulty: string
@@ -7,8 +8,8 @@ export type Progress = {
   totalCount: number
 }
 
-function defaultProgress(difficulty: string): Progress {
-  return { difficulty, acceptedCount: 0, wrongAnswerCount: 0, totalCount: 10 }
+function defaultProgress(difficulty: string, totalCount: number): Progress {
+  return { difficulty, totalCount, acceptedCount: 0, wrongAnswerCount: 0 }
 }
 
 function difficultyToIndex(difficulty: ProblemDifficulty) {
@@ -20,13 +21,14 @@ function difficultyToIndex(difficulty: ProblemDifficulty) {
 }
 
 export function convertToProgress(
+  counts: ProblemCounts,
   results: ProblemResultDocument[]
 ): Progress[] {
   const progressList = [
-    defaultProgress('easy'),
-    defaultProgress('medium'),
-    defaultProgress('hard'),
-    defaultProgress('extreme'),
+    defaultProgress('easy', counts.warm + counts.easy),
+    defaultProgress('medium', counts.medium),
+    defaultProgress('hard', counts.hard),
+    defaultProgress('extreme', counts.extreme),
   ]
 
   results.forEach((result) => {
