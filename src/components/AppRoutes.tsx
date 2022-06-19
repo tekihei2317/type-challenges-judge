@@ -18,8 +18,11 @@ export const AppRoutes = () => {
           <Route path="submit" element={<SubmitPage />} />
           <Route path="submissions" element={<SubmissionsPage />} />
           <Route index element={<ProblemPage />} />
+          <Route
+            path="submissions/:submissionId"
+            element={<SubmissionPage />}
+          />
         </Route>
-        <Route path="/submissions/:submissionId" element={<SubmissionPage />} />
       </Routes>
     </DefaultLayout>
   )

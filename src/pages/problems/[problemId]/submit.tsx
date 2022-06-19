@@ -33,7 +33,7 @@ export const SubmitPage = () => {
     }
 
     const submission: UnvalidatedSubmission = {
-      problemId: problem?.id as string,
+      problemId: problem.id,
       code,
       codeLength: code.length,
       status: 'Judging',
@@ -42,7 +42,7 @@ export const SubmitPage = () => {
 
     const userSubmission = await createSubmission(user.userId, submission)
     if (userSubmission !== undefined) {
-      navigate(`/submissions/${userSubmission.id}`)
+      navigate(`/problems/${problem.id}/submissions/${userSubmission.id}`)
     }
   }
 
