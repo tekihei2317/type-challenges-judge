@@ -21,7 +21,7 @@ export const ProblemList = ({
   statusMap,
 }: ProblemListProps) => {
   return (
-    <Stack spacing={8} mt={8}>
+    <Stack spacing={8}>
       <Stack p={1}>
         <Text fontSize={'xl'} fontWeight={'bold'}>
           Warmup

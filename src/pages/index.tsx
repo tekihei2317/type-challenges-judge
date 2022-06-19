@@ -69,7 +69,7 @@ export const IndexPage = () => {
   )
 
   return (
-    <Container maxW={'container.xl'}>
+    <Container maxW={'container.xl'} pt={8}>
       <ProblemList
         warmupProblems={warmupProblems}
         easyProblems={easyProblems}
