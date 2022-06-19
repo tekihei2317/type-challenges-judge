@@ -43,10 +43,6 @@ const ProfileMenu = ({ user, handleLogout }: ProfileMenuProps) => {
   )
 }
 
-type DefaultLayoutProps = {
-  children: React.ReactNode
-}
-
 type NavigationLinkProps = {
   name: string
   path: string
@@ -74,6 +70,10 @@ const NavigationLink = ({ path, name }: NavigationLinkProps) => {
       )}
     </Link>
   )
+}
+
+type DefaultLayoutProps = {
+  children: React.ReactNode
 }
 
 export const DefaultLayout = ({ children }: DefaultLayoutProps) => {
