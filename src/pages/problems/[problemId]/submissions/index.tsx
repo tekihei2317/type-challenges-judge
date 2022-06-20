@@ -9,6 +9,7 @@ import {
   Link,
   Wrap,
   Button,
+  Box,
 } from '@chakra-ui/react'
 import { useEffect, useMemo, useState } from 'react'
 import { ProblemSubmissionDocument } from '../../../../model'
@@ -71,22 +72,22 @@ export const SubmissionsPage = () => {
 
   return (
     <Stack pb={24}>
-      <Wrap p={1}>
-        <Button
-          colorScheme={userType === 'all' ? 'blue' : undefined}
-          onClick={() => setUserType('all')}
-        >
-          全ての提出
-        </Button>
-        {user && (
+      {user && (
+        <Wrap p={1}>
+          <Button
+            colorScheme={userType === 'all' ? 'blue' : undefined}
+            onClick={() => setUserType('all')}
+          >
+            全ての提出
+          </Button>
           <Button
             colorScheme={userType === 'me' ? 'blue' : undefined}
             onClick={() => setUserType('me')}
           >
             自分の提出
           </Button>
-        )}
-      </Wrap>
+        </Wrap>
+      )}
       <TableContainer mb={8}>
         <Table>
           <Thead>
@@ -132,11 +133,13 @@ export const SubmissionsPage = () => {
         </Table>
       </TableContainer>
       {submissions.length > 0 && userType === 'all' && (
-        <Pagination
-          pages={pages}
-          currentPage={currentPage}
-          handlePageClick={handlePageClick}
-        />
+        <Box pt={6}>
+          <Pagination
+            pages={pages}
+            currentPage={currentPage}
+            handlePageClick={handlePageClick}
+          />
+        </Box>
       )}
     </Stack>
   )
