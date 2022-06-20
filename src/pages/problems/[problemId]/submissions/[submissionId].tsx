@@ -14,23 +14,34 @@ import {
   Text,
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
-import { Link as ReactLink, useParams } from 'react-router-dom'
+import {
+  Link as ReactLink,
+  useOutletContext,
+  useParams,
+} from 'react-router-dom'
 import { CodeBlock } from '../../../../components/CodeBlock'
+import { ProblemLayoutContext } from '../../../../components/ProblemLayout'
 import { SubmissionStatusBadge } from '../../../../components/SubmissionStatusBadge'
-import { useAuth } from '../../../../hooks/useAuth'
 import { Submission } from '../../../../model'
 import { fetchSubmission } from '../../../../use-cases/fetch-submission'
+import { findSubmissionOwner } from '../../../../use-cases/find-submission-owner'
 import { changeToCodeMarkdown } from '../../../../utils/code-block'
 
 export const SubmissionPage = () => {
   const [submission, setSubmission] = useState<Submission>()
   const { submissionId } = useParams()
-  const { user } = useAuth()
+  const { problem } = useOutletContext<ProblemLayoutContext>()
 
   useEffect(() => {
     const fetchData = async () => {
+      const owner = await findSubmissionOwner(
+        problem.id,
+        submissionId as string
+      )
+      if (owner === undefined) return
+
       const userSubmission = await fetchSubmission(
-        user?.userId as string,
+        owner.userId,
         submissionId as string
       )
 
@@ -40,7 +51,7 @@ export const SubmissionPage = () => {
     }
 
     fetchData()
-  }, [submissionId, user?.userId])
+  }, [submissionId, problem])
 
   const tableBorderColor = 'gray.200'
 
