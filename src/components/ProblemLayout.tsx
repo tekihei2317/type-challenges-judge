@@ -69,7 +69,7 @@ export const ProblemLayout = () => {
         borderBottom={'1px'}
         borderBottomColor={'gray.300'}
         mt={8}
-        mb={4}
+        mb={6}
       >
         <TabButton path={paths.problem} currentPath={location.pathname}>
           問題

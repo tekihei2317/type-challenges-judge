@@ -14,7 +14,13 @@ export const ProblemPage = () => {
       ) : (
         <Box>
           <Wrap p={1} pl={0.5} mb={6}>
-            <Button colorScheme={'blue'}>挑戦する</Button>
+            <Link
+              href={problem.playground_url}
+              isExternal
+              style={{ textDecoration: 'none' }}
+            >
+              <Button colorScheme={'blue'}>挑戦する</Button>
+            </Link>
             <Link
               href={toGitHubUrl(problem)}
               isExternal

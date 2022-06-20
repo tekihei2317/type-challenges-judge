@@ -36,3 +36,19 @@ export interface Quiz {
     readme?: Record<string, string>
   }
 }
+
+// type-challenges/type-challengesより引用
+function toDivider(text: string) {
+  return `/* _____________ ${text} _____________ */\n`
+}
+
+export function formatToCode(quiz: Quiz) {
+  const codes = [
+    toDivider('Your Code Here'),
+    `${quiz.template.trim()}\n`,
+    toDivider('Test Cases'),
+    quiz.tests || '',
+  ]
+
+  return codes.join('\n')
+}
