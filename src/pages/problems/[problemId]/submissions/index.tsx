@@ -55,13 +55,7 @@ export const SubmissionsPage = () => {
     const fetchData = async () => {
       const [submissionsCount, documents] = await Promise.all([
         countProblemSubmissions(problem.id),
-        fetchProblemSubmissions(
-          problem.id,
-          currentPage,
-          20,
-          totalPage,
-          userNameFilter
-        ),
+        fetchProblemSubmissions(problem.id, currentPage, 20, userNameFilter),
       ])
       setSubmissions(documents)
       setTotalPage(Math.ceil(submissionsCount / 20))
