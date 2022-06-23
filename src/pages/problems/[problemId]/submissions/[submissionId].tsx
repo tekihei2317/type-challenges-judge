@@ -24,7 +24,7 @@ import { ProblemLayoutContext } from '../../../../components/ProblemLayout'
 import { SubmissionStatusBadge } from '../../../../components/SubmissionStatusBadge'
 import { Submission } from '../../../../model'
 import { fetchSubmission } from '../../../../use-cases/fetch-submission'
-import { findSubmissionOwner } from '../../../../use-cases/find-submission-owner'
+import { findSubmissionOwnerId } from '../../../../use-cases/find-submission-owner-id'
 import { changeToCodeMarkdown } from '../../../../utils/code-block'
 
 export const SubmissionPage = () => {
@@ -34,20 +34,13 @@ export const SubmissionPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const owner = await findSubmissionOwner(
-        problem.id,
-        submissionId as string
-      )
-      console.log({ owner, submissionId })
-
-      if (owner === undefined) return
+      const ownerId = await findSubmissionOwnerId(submissionId as string)
+      if (ownerId === undefined) return
 
       const userSubmission = await fetchSubmission(
-        owner.userId,
+        ownerId,
         submissionId as string
       )
-
-      console.log(userSubmission)
 
       if (userSubmission !== undefined) {
         setSubmission(userSubmission)
