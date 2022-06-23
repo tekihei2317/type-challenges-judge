@@ -132,18 +132,31 @@ export const SubmissionPage = () => {
                 </Tbody>
               </Table>
             </TableContainer>
-            {submission.diagnostics !== undefined &&
-              submission.diagnostics.length > 0 && (
-                <Box bg={'gray.100'} p={4} borderRadius={4}>
-                  {
-                    <UnorderedList>
-                      {submission.diagnostics.map((diagnostic, index) => (
-                        <ListItem key={index}>{diagnostic}</ListItem>
-                      ))}
-                    </UnorderedList>
-                  }
-                </Box>
-              )}
+            <Box>
+              <details>
+                <summary
+                  style={{
+                    cursor: 'pointer',
+                    userSelect: 'none',
+                  }}
+                >
+                  テストケース
+                </summary>
+                <CodeBlock code={changeToCodeMarkdown(problem.tests, 'ts')} />
+              </details>
+              {submission.diagnostics !== undefined &&
+                submission.diagnostics.length > 0 && (
+                  <Box bg={'gray.100'} p={4} borderRadius={4} mt={2}>
+                    {
+                      <UnorderedList>
+                        {submission.diagnostics.map((diagnostic, index) => (
+                          <ListItem key={index}>{diagnostic}</ListItem>
+                        ))}
+                      </UnorderedList>
+                    }
+                  </Box>
+                )}
+            </Box>
           </Stack>
         )}
       </Stack>
