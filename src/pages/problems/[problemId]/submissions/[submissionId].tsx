@@ -38,12 +38,16 @@ export const SubmissionPage = () => {
         problem.id,
         submissionId as string
       )
+      console.log({ owner, submissionId })
+
       if (owner === undefined) return
 
       const userSubmission = await fetchSubmission(
         owner.userId,
         submissionId as string
       )
+
+      console.log(userSubmission)
 
       if (userSubmission !== undefined) {
         setSubmission(userSubmission)
