@@ -24,7 +24,7 @@ import { ProblemLayoutContext } from '../../../../components/ProblemLayout'
 import { SubmissionStatusBadge } from '../../../../components/SubmissionStatusBadge'
 import { Submission } from '../../../../model'
 import { fetchSubmission } from '../../../../use-cases/fetch-submission'
-import { findSubmissionOwner } from '../../../../use-cases/find-submission-owner'
+import { findSubmissionOwnerId } from '../../../../use-cases/find-submission-owner-id'
 import { changeToCodeMarkdown } from '../../../../utils/code-block'
 
 export const SubmissionPage = () => {
@@ -34,14 +34,11 @@ export const SubmissionPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const owner = await findSubmissionOwner(
-        problem.id,
-        submissionId as string
-      )
-      if (owner === undefined) return
+      const ownerId = await findSubmissionOwnerId(submissionId as string)
+      if (ownerId === undefined) return
 
       const userSubmission = await fetchSubmission(
-        owner.userId,
+        ownerId,
         submissionId as string
       )
 
@@ -135,18 +132,31 @@ export const SubmissionPage = () => {
                 </Tbody>
               </Table>
             </TableContainer>
-            {submission.diagnostics !== undefined &&
-              submission.diagnostics.length > 0 && (
-                <Box bg={'gray.100'} p={4} borderRadius={4}>
-                  {
-                    <UnorderedList>
-                      {submission.diagnostics.map((diagnostic, index) => (
-                        <ListItem key={index}>{diagnostic}</ListItem>
-                      ))}
-                    </UnorderedList>
-                  }
-                </Box>
-              )}
+            <Box>
+              <details>
+                <summary
+                  style={{
+                    cursor: 'pointer',
+                    userSelect: 'none',
+                  }}
+                >
+                  テストケース
+                </summary>
+                <CodeBlock code={changeToCodeMarkdown(problem.tests, 'ts')} />
+              </details>
+              {submission.diagnostics !== undefined &&
+                submission.diagnostics.length > 0 && (
+                  <Box bg={'gray.100'} p={4} borderRadius={4} mt={2}>
+                    {
+                      <UnorderedList>
+                        {submission.diagnostics.map((diagnostic, index) => (
+                          <ListItem key={index}>{diagnostic}</ListItem>
+                        ))}
+                      </UnorderedList>
+                    }
+                  </Box>
+                )}
+            </Box>
           </Stack>
         )}
       </Stack>

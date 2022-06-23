@@ -85,6 +85,12 @@ export type ProblemDocument = {
   tests: string
 }
 
+export type RootSubmissionDocument = {
+  id?: string
+  userId: string
+  problemId: string
+}
+
 export type ConvertToProbleSubmission = (
   userSubmission: UserSubmissionDocument
 ) => ProblemSubmissionDocument

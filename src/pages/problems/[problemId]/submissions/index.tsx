@@ -30,7 +30,7 @@ export const SubmissionsPage = () => {
   const [totalPage, setTotalPage] = useState<number>(1)
 
   // 誰の提出を表示するか
-  const [userType, setUserType] = useState<'all' | 'me'>('all')
+  const [userType, setUserType] = useState<'me' | 'all'>('me')
   const { user } = useAuth()
 
   const pages = useMemo(
@@ -69,16 +69,16 @@ export const SubmissionsPage = () => {
       {user && (
         <Wrap p={1}>
           <Button
-            colorScheme={userType === 'all' ? 'blue' : undefined}
-            onClick={() => setUserType('all')}
-          >
-            全ての提出
-          </Button>
-          <Button
             colorScheme={userType === 'me' ? 'blue' : undefined}
             onClick={() => setUserType('me')}
           >
             自分の提出
+          </Button>
+          <Button
+            colorScheme={userType === 'all' ? 'blue' : undefined}
+            onClick={() => setUserType('all')}
+          >
+            全ての提出
           </Button>
         </Wrap>
       )}

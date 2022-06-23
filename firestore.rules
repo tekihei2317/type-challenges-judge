@@ -22,6 +22,12 @@ service cloud.firestore {
         && 'createdAt' in submission && submission.createdAt == request.time
     }
 
+    function isValidRootSubmission(submission) {
+      return submission.size() == 2
+        && 'userId' in submission && submission.userId is string
+        && 'problemId' in submission && submission.problemId is string
+    }
+
     match /users/{userId} {
       allow get: if request.auth != null && userId == request.auth.uid
       allow create: if isUserAuthenticated(userId) && isValidUser(request.resource.data)
@@ -42,8 +48,12 @@ service cloud.firestore {
 
       match /submissions/{submissionId} {
         allow read: if true
-        allow create: if true
       }
+    }
+
+    match /submissions/{submissionId} {
+      allow read: if true
+      allow create: if isValidRootSubmission(request.resource.data)
     }
   }
 }

@@ -1,6 +1,6 @@
-import { addDoc, collection } from 'firebase/firestore'
-import { UnvalidatedSubmission, collectionName as CN } from '../model'
-import { db } from '../utils/firebase'
+import { addDoc, setDoc } from 'firebase/firestore'
+import { UnvalidatedSubmission, RootSubmissionDocument } from '../model'
+import { submissionsRef, userSubmissionRef } from '../utils/firestore-reference'
 import { fetchSubmission } from './fetch-submission'
 
 /**
@@ -10,8 +10,14 @@ export async function createSubmission(
   userId: string,
   submission: UnvalidatedSubmission
 ) {
-  const submissionsRef = collection(db, CN.users, userId, CN.submissions)
-  const submissionRef = await addDoc(submissionsRef, submission)
+  const rootSubmission: RootSubmissionDocument = {
+    userId,
+    problemId: submission.problemId,
+  }
+  const submissionRef = await addDoc(submissionsRef(), rootSubmission)
 
-  return fetchSubmission(userId, submissionRef.id)
+  const ref = userSubmissionRef(userId, submissionRef.id)
+  setDoc(ref, submission)
+
+  return fetchSubmission(userId, ref.id)
 }

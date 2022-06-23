@@ -41,6 +41,7 @@ export const SubmitPage = () => {
     }
 
     const userSubmission = await createSubmission(user.userId, submission)
+
     if (userSubmission !== undefined) {
       navigate(`/problems/${problem.id}/submissions/${userSubmission.id}`)
     }

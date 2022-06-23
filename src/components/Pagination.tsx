@@ -13,17 +13,21 @@ export const Pagination = ({
   handlePageClick,
 }: PaginationProps) => {
   return (
-    <Flex gap="1">
-      {pages.map((page) => (
-        <Button
-          key={page}
-          colorScheme={'blue'}
-          variant={page === currentPage ? 'solid' : 'outline'}
-          onClick={() => handlePageClick(page)}
-        >
-          {page === 'LEFT' ? '«' : page === 'RIGHT' ? '»' : page}
-        </Button>
-      ))}
-    </Flex>
+    <>
+      {pages.length > 1 && (
+        <Flex gap="1">
+          {pages.map((page) => (
+            <Button
+              key={page}
+              colorScheme={'blue'}
+              variant={page === currentPage ? 'solid' : 'outline'}
+              onClick={() => handlePageClick(page)}
+            >
+              {page === 'LEFT' ? '«' : page === 'RIGHT' ? '»' : page}
+            </Button>
+          ))}
+        </Flex>
+      )}
+    </>
   )
 }

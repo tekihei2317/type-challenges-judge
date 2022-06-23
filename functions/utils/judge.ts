@@ -15,6 +15,7 @@ export async function compileSolution(
   const tempDir = tmp.dirSync()
   const tempFile = tmp.fileSync({ dir: tempDir.name, postfix: '.ts' })
 
+  // FIXME: いい方法があれば修正する
   // @typ-challenges/utilsが必要なので、tempディレクトリにsymbolic linkを置く
   fs.symlinkSync(
     `${process.cwd()}/node_modules`,
