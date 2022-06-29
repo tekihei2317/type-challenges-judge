@@ -6,7 +6,8 @@
   "scripts": {
     "update-problems": "ts-node ./commands/update-problems.ts",
     "dbseed": "FIRESTORE_EMULATOR_HOST=localhost:8080 ts-node ./commands/dbseed.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "deploy": "firebase deploy --only functions"
   },
   "devDependencies": {
     "@type-challenges/utils": "^0.1.1",

@@ -26,6 +26,7 @@ export async function compileSolution(
 
   const options: ts.CompilerOptions = {
     noImplicitAny: true,
+    strictNullChecks: true,
     target: ts.ScriptTarget.ES5,
     module: ts.ModuleKind.CommonJS,
     noEmit: true,
