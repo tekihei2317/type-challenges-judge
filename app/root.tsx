@@ -1,4 +1,5 @@
-import { Outlet } from '@remix-run/react'
+import { Outlet, Scripts } from '@remix-run/react'
+import { DefaultLayout } from './components/DefaultLayout'
 
 export default function Root() {
   return (
@@ -26,6 +27,7 @@ export default function Root() {
       <body>
         <div id="root">
           <Outlet />
+          <Scripts />
         </div>
       </body>
     </html>
