@@ -1,4 +1,4 @@
-import { ProblemResultDocument } from '../../../src/model'
+import { ProblemResultDocument } from '../../../app/model'
 import { userProblemResult } from '../../utils/firestore-reference'
 
 /**

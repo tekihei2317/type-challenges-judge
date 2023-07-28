@@ -1,6 +1,6 @@
 import { updateProblems } from '../update-problems'
 import { db } from '../utils/firebase'
-import { ProblemSubmissionDocument } from '../../src/model'
+import { ProblemSubmissionDocument } from '../../app/model'
 import { FieldValue } from '@google-cloud/firestore'
 import { Timestamp } from 'firebase/firestore'
 

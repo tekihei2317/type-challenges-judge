@@ -18,16 +18,16 @@ import {
   Link as ReactLink,
   useOutletContext,
   useParams,
-} from 'react-router-dom'
-import { CodeBlock } from '../../../../components/CodeBlock'
-import { ProblemLayoutContext } from '../../../../components/ProblemLayout'
-import { SubmissionStatusBadge } from '../../../../components/SubmissionStatusBadge'
-import { Submission } from '../../../../model'
-import { fetchSubmission } from '../../../../use-cases/fetch-submission'
-import { findSubmissionOwnerId } from '../../../../use-cases/find-submission-owner-id'
-import { changeToCodeMarkdown } from '../../../../utils/code-block'
+} from '@remix-run/react'
+import { CodeBlock } from '../components/CodeBlock'
+import { ProblemLayoutContext } from './problems.$problemId'
+import { SubmissionStatusBadge } from '../components/SubmissionStatusBadge'
+import { Submission } from '../model'
+import { fetchSubmission } from '../use-cases/fetch-submission'
+import { findSubmissionOwnerId } from '../use-cases/find-submission-owner-id'
+import { changeToCodeMarkdown } from '../utils/code-block'
 
-export const SubmissionPage = () => {
+export default function SubmissionPage() {
   const [submission, setSubmission] = useState<Submission>()
   const { submissionId } = useParams()
   const { problem } = useOutletContext<ProblemLayoutContext>()

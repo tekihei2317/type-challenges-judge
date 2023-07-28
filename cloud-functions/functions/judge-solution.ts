@@ -5,7 +5,7 @@ import {
   ProblemDocument,
   ProblemResultDocument,
   UserSubmissionDocument,
-} from '../../src/model'
+} from '../../app/model'
 import { updateSubmission } from './database/update-submission'
 import { calculateStatus, compileSolution } from '../utils/judge'
 import { updateProblemResult } from './database/update-problem-result'

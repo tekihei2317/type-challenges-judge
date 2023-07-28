@@ -12,17 +12,17 @@ import {
   Box,
 } from '@chakra-ui/react'
 import { useEffect, useMemo, useState } from 'react'
-import { ProblemSubmissionDocument } from '../../../../model'
-import { fetchProblemSubmissions } from '../../../../use-cases/fetch-problem-submissions'
-import { Link as ReactLink, useOutletContext } from 'react-router-dom'
-import { ProblemLayoutContext } from '../../../../components/ProblemLayout'
-import { SubmissionStatusBadge } from '../../../../components/SubmissionStatusBadge'
-import { generatePages, PageType } from '../../../../utils/pagination'
-import { countProblemSubmissions } from '../../../../use-cases/count-problem-submissions'
-import { Pagination } from '../../../../components/Pagination'
-import { useAuth } from '../../../../hooks/useAuth'
+import { Link as ReactLink, useOutletContext } from '@remix-run/react'
+import { ProblemSubmissionDocument } from '../model'
+import { fetchProblemSubmissions } from '../use-cases/fetch-problem-submissions'
+import { ProblemLayoutContext } from './problems.$problemId'
+import { SubmissionStatusBadge } from '../components/SubmissionStatusBadge'
+import { generatePages, PageType } from '../utils/pagination'
+import { countProblemSubmissions } from '../use-cases/count-problem-submissions'
+import { Pagination } from '../components/Pagination'
+import { useAuth } from '../hooks/useAuth'
 
-export const SubmissionsPage = () => {
+export default function SubmissionsPage() {
   const [submissions, setSubmissions] = useState<ProblemSubmissionDocument[]>(
     []
   )

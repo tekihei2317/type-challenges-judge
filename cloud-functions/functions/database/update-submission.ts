@@ -2,7 +2,7 @@ import * as functions from 'firebase-functions'
 import {
   ProblemSubmissionDocument,
   UserSubmissionDocument,
-} from '../../../src/model'
+} from '../../../app/model'
 import {
   problemSubmissionRef,
   userSubmissionRef,

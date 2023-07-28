@@ -7,14 +7,14 @@ import {
   Textarea,
 } from '@chakra-ui/react'
 import React, { useMemo, useState } from 'react'
-import { createSubmission } from '../../../use-cases/create-submission'
-import { useAuth } from '../../../hooks/useAuth'
-import { UnvalidatedSubmission } from '../../../model'
-import { useOutletContext, useNavigate } from 'react-router-dom'
-import { ProblemLayoutContext } from '../../../components/ProblemLayout'
+import { createSubmission } from '../use-cases/create-submission'
+import { useAuth } from '../hooks/useAuth'
+import { UnvalidatedSubmission } from '../model'
+import { useOutletContext, useNavigate } from '@remix-run/react'
+import { ProblemLayoutContext } from './problems.$problemId'
 import { serverTimestamp, Timestamp } from 'firebase/firestore'
 
-export const SubmitPage = () => {
+export default function SubmitPage() {
   const [code, setCode] = useState<string>('')
   const { user } = useAuth()
   const { problem } = useOutletContext<ProblemLayoutContext>()

@@ -9,7 +9,7 @@ import { Progress, convertToProgress } from '../utils/progress'
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
-export const ProgressPage = () => {
+export default function ProgressPage() {
   const { user } = useAuth()
   const [progressList, setProgressList] = useState<Progress[]>([])
 

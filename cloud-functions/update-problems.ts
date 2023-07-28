@@ -1,5 +1,5 @@
 import lzs from 'lz-string'
-import { collectionName, Problem } from './../src/model'
+import { collectionName, Problem } from './../app/model'
 import { db } from './utils/firebase'
 import { loadProblems } from './utils/loader'
 import { formatToCode } from './utils/type-challenges'

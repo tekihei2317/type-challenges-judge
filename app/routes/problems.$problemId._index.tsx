@@ -1,10 +1,10 @@
-import { useOutletContext } from 'react-router-dom'
+import { useOutletContext } from '@remix-run/react'
 import { Button, Wrap, Box, Link } from '@chakra-ui/react'
-import { toGitHubUrl } from '../../../utils/type-challenges'
-import { ProblemLayoutContext } from '../../../components/ProblemLayout'
-import { CodeBlock } from '../../../components/CodeBlock'
+import { toGitHubUrl } from '../utils/type-challenges'
+import { ProblemLayoutContext } from './problems.$problemId'
+import { CodeBlock } from '../components/CodeBlock'
 
-export const ProblemPage = () => {
+export default function ProblemPage() {
   const { problem } = useOutletContext<ProblemLayoutContext>()
 
   return (

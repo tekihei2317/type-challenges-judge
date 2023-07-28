@@ -1,6 +1,6 @@
 import { Container, Text, Flex, Button } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
-import { Link, Outlet, useLocation, useParams } from 'react-router-dom'
+import { Link, Outlet, useLocation, useParams } from '@remix-run/react'
 import { fetchProblem } from '../use-cases/fetch-problem'
 import { Problem } from '../model'
 
@@ -38,7 +38,7 @@ const TabButton = ({ path, currentPath, children }: TabButtonProps) => {
   )
 }
 
-export const ProblemLayout = () => {
+export default function ProblemLayout() {
   const { problemId } = useParams()
 
   const [problem, setProblem] = useState<Problem | undefined>()

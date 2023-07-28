@@ -5,7 +5,7 @@ import {
   ProblemSubmissionDocument,
   User,
   UserSubmissionDocument,
-} from '../../src/model'
+} from '../../app/model'
 
 /**
  * ユーザーコレクションの中にある提出を、問題コレクションの中に置く用の提出に変換する
