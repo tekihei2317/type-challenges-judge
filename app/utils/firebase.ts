@@ -3,21 +3,24 @@ import { connectAuthEmulator, getAuth } from 'firebase/auth'
 import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore'
 import { getAnalytics } from 'firebase/analytics'
 
-const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
-}
+const app = initializeApp({
+  apiKey: 'AIzaSyAl93UHoFUQb1wfPhifDNPX1UDZpheWfxI',
+  authDomain: 'type-challenges-judge.firebaseapp.com',
+  projectId: 'type-challenges-judge',
+  storageBucket: 'type-challenges-judge.appspot.com',
+  messagingSenderId: '934271547976',
+  appId: '1:934271547976:web:9408246fa529a60eb9367d',
+  measurementId: 'G-9PK16MDC1L',
+})
 
-export const app = initializeApp(firebaseConfig)
 export const auth = getAuth(app)
 export const db = getFirestore(app)
-export const analytics = getAnalytics(app)
 
-if (['development', 'test'].includes(import.meta.env.MODE)) {
+const enableEmulator = ['development', 'test'].includes(
+  process.env.NODE_ENV ?? 'development'
+)
+
+if (enableEmulator) {
   connectFirestoreEmulator(db, 'localhost', 8080)
   connectAuthEmulator(auth, 'http://localhost:9099')
 }

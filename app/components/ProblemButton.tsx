@@ -1,5 +1,5 @@
 import { Problem, ProblemResultStatus } from '../model'
-import { Link } from 'react-router-dom'
+import { Link } from '@remix-run/react'
 import { Box } from '@chakra-ui/react'
 
 type ProblemButtonProps = {

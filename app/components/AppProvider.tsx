@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { User } from '../model'
 import { FirebaseContext, UserContext } from '../utils/context'
 import { ChakraProvider } from '@chakra-ui/react'
-import { BrowserRouter } from 'react-router-dom'
 import { auth } from '../utils/firebase'
 import { onAuthStateChanged } from 'firebase/auth'
 import { findUser } from '../use-cases/find-user'
@@ -31,7 +30,7 @@ export const AppProvider = ({ children }: AppProvierProps) => {
     <ChakraProvider>
       <FirebaseContext.Provider value={{ auth }}>
         <UserContext.Provider value={{ user, setUser }}>
-          <BrowserRouter>{children}</BrowserRouter>
+          {children}
         </UserContext.Provider>
       </FirebaseContext.Provider>
     </ChakraProvider>

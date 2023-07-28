@@ -1,7 +1,10 @@
-import { Problem } from '../model'
-import { ProblemStatusMap } from '../pages'
+import { Problem, ProblemResultStatus } from '../model'
 import { Stack, Text, Wrap } from '@chakra-ui/react'
 import { ProblemButton } from './ProblemButton'
+
+type ProblemStatusMap = {
+  [problemId: string]: ProblemResultStatus
+}
 
 type ProblemListProps = {
   warmupProblems: Problem[]

@@ -1,4 +1,5 @@
 import { Outlet, Scripts } from '@remix-run/react'
+import { AppProvider } from './components/AppProvider'
 import { DefaultLayout } from './components/DefaultLayout'
 
 export default function Root() {
@@ -26,7 +27,11 @@ export default function Root() {
       </head>
       <body>
         <div id="root">
-          <Outlet />
+          <AppProvider>
+            <DefaultLayout>
+              <Outlet />
+            </DefaultLayout>
+          </AppProvider>
           <Scripts />
         </div>
       </body>

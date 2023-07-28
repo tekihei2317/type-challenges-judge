@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react'
 import { useAuth } from '../hooks/useAuth'
 import { User } from '../model'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation } from '@remix-run/react'
 import { useMemo } from 'react'
 
 type LoginMenuProps = {
