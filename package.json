@@ -11,7 +11,6 @@
     "check-format": "prettier --check .",
     "lint": "eslint --ext .js,.ts,.tsx .",
     "validate": "npm run check-format && npm run lint",
-    "preview": "vite preview",
     "test:rules": "firebase emulators:exec --only firestore 'vitest run'",
     "test:rules-watch": "firebase emulators:exec --only firestore vitest"
   },
@@ -30,7 +29,6 @@
     "react-chartjs-2": "^4.2.0",
     "react-dom": "^18.0.0",
     "react-markdown": "^8.0.3",
-    "react-router-dom": "6",
     "react-syntax-highlighter": "^15.5.0",
     "utility-types": "^3.10.0"
   },
