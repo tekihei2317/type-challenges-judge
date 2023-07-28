@@ -31,3 +31,9 @@ firebase-adminsdk.json
 
 # vitest
 coverage
+
+/.cache
+/public/build
+/functions/\[\[path\]\].js
+/functions/\[\[path\]\].js.map
+.wrangler
