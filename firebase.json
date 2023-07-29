@@ -14,7 +14,7 @@
     ]
   },
   "functions": {
-    "source": "functions",
+    "source": "./cloud-functions",
     "runtime": "nodejs16"
   },
   "emulators": {

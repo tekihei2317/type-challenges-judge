@@ -1,5 +1,5 @@
 import * as fs from 'fs'
-import { collectionName as CN, UnvalidatedSubmission } from './src/model'
+import { collectionName as CN, UnvalidatedSubmission } from './app/model'
 import {
   addDoc,
   collection,
