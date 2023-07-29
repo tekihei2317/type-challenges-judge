@@ -8,15 +8,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: yarn
       - run: yarn install
       - run: yarn run test:rules
       - run: yarn run build
-      - uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_TYPE_CHALLENGES_JUDGE }}'
-          channelId: live
-          projectId: type-challenges-judge
       - uses: w9jds/firebase-action@master
         with:
           args: deploy --only firestore:rules
