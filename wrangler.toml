@@ -1,0 +1,4 @@
+[[d1_databases]]
+binding = "DB" # i.e. available in your Worker on env.DB
+database_name = "type-challenges-judge"
+database_id = "2adb5da8-cd23-45a7-b2fb-2392319e9520"
