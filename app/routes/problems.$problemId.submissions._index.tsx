@@ -15,6 +15,8 @@ import { useMemo } from 'react'
 import {
   Link as ReactLink,
   useLoaderData,
+  useLocation,
+  useNavigate,
   useOutletContext,
 } from '@remix-run/react'
 import { SubmissionStatus } from '../model'
@@ -27,46 +29,78 @@ import { useAuth } from '../hooks/useAuth'
 import { json, LoaderArgs } from '@remix-run/cloudflare'
 import invariant from 'tiny-invariant'
 
-export async function loader({ context, params }: LoaderArgs) {
+export async function loader({ context, params, request }: LoaderArgs) {
+  const query = new URL(request.url).searchParams
   invariant(
     typeof params.problemId == 'string',
     'params.problemId must be a string'
   )
-  const page = 1
-  // TODO: ログインしているユーザーのIDを取得する
-  const userId = undefined
+  const scope = query.get('scope') === 'all' ? 'all' : 'me'
+  const page = query.get('page') !== null ? Number(query.get('page')) : 1
+  const pageLimit = 20
+  // TODO: 認証情報からユーザーIDを取得する
+  const userId = scope === 'me' ? 'WHEmuE9ySqTfsWqE949HU5gBFTYe' : undefined
 
   const { count, submissions } = await fetchProblemSubmissions(
     context.env.DB,
     params.problemId,
     page,
-    20,
+    pageLimit,
     userId
   )
-  const scope = 'all'
-  const currentPage = 1
-  const totalPage = 10
-  return json({ submissions, scope, totalPage, currentPage })
+  const totalPage = Math.ceil(count / pageLimit)
+
+  return json({ submissions, scope, totalPage, currentPage: page })
+}
+
+function useQuery() {
+  const { search } = useLocation()
+
+  return useMemo(() => new URLSearchParams(search), [search])
 }
 
 export default function SubmissionsPage() {
   const { user } = useAuth()
-  const { scope, submissions, totalPage, currentPage } =
-    useLoaderData<typeof loader>()
+  const { submissions, totalPage } = useLoaderData<typeof loader>()
   const { problem } = useOutletContext<ProblemLayoutContext>()
+  const location = useLocation()
+  const query = useQuery()
+  const queryParams = {
+    scope: query.get('scope'),
+    page: query.get('page'),
+  }
+  const currentPage = queryParams.page !== null ? Number(queryParams.page) : 1
 
   const pages = useMemo(
     () => generatePages(currentPage, totalPage),
     [currentPage, totalPage]
   )
 
+  const currentPath = location.pathname
+  const navigate = useNavigate()
+
   const handlePageClick = (page: PageType) => {
     if (page === 'LEFT') {
-      // setCurrentPage(currentPage - 2)
+      navigate(
+        `${currentPath}?${new URLSearchParams({
+          scope: 'all',
+          page: (currentPage - 2).toString(),
+        }).toString()}`
+      )
     } else if (page === 'RIGHT') {
-      // setCurrentPage(currentPage + 2)
+      navigate(
+        `${currentPath}?${new URLSearchParams({
+          scope: 'all',
+          page: (currentPage + 2).toString(),
+        }).toString()}`
+      )
     } else {
-      // setCurrentPage(page)
+      navigate(
+        `${currentPath}?${new URLSearchParams({
+          scope: 'all',
+          page: page.toString(),
+        }).toString()}`
+      )
     }
   }
   return (
@@ -74,17 +108,21 @@ export default function SubmissionsPage() {
       {user && (
         <Wrap p={1}>
           <Button
-            colorScheme={scope === 'me' ? 'blue' : undefined}
-            onClick={() => {
-              // setUserType('me')
-            }}
+            colorScheme={queryParams.scope !== 'all' ? 'blue' : undefined}
+            onClick={() =>
+              navigate(`${currentPath}?${new URLSearchParams({}).toString()}`)
+            }
           >
             自分の提出
           </Button>
           <Button
-            colorScheme={scope === 'all' ? 'blue' : undefined}
+            colorScheme={queryParams.scope === 'all' ? 'blue' : undefined}
             onClick={() => {
-              // setUserType('all')
+              navigate(
+                `${currentPath}?${new URLSearchParams({
+                  scope: 'all',
+                }).toString()}`
+              )
             }}
           >
             全ての提出
@@ -135,7 +173,7 @@ export default function SubmissionsPage() {
           </Thead>
         </Table>
       </TableContainer>
-      {submissions.length > 0 && scope === 'all' && (
+      {submissions.length > 0 && queryParams.scope === 'all' && (
         <Box pt={6}>
           <Pagination
             pages={pages}

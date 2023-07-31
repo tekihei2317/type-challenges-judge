@@ -173,10 +173,11 @@ select
   user.screenName as userScreenName
 from
   Submission submission
-  inner join User user on submissions.userId = user.userId
+  inner join User user on submission.userId = user.userId
 where
   submission.problemId = ?1 and
-  submission.userId = ?2`;
+  submission.userId = ?2
+order by submission.createdAt desc`;
 
 export type findMySubmissionsToProblemParams = {
   problemId: string;
@@ -238,6 +239,7 @@ from
   inner join User user on submission.userId = user.userId
 where
   Submission.problemId = ?
+order by submission.createdAt desc
 limit ?
 offset ?`;
 

@@ -31,10 +31,11 @@ select
   user.screenName as userScreenName
 from
   Submission submission
-  inner join User user on submissions.userId = user.userId
+  inner join User user on submission.userId = user.userId
 where
   submission.problemId = @problemId and
-  submission.userId = @userId;
+  submission.userId = @userId
+order by submission.createdAt desc;
 
 -- name: countSubmissionsToProblem :one
 select count(*) as submissionCount from Submission where problemId = @problemId;
@@ -53,5 +54,6 @@ from
   inner join User user on submission.userId = user.userId
 where
   Submission.problemId = @problemId
+order by submission.createdAt desc
 limit ?
 offset ?;
