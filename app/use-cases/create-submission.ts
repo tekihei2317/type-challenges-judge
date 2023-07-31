@@ -1,15 +1,5 @@
-import { SubmissionStatus } from '../model'
 import { generateAutoId } from '../utils/record-id'
-
-type SubmissionModel = {
-  id: string
-  problemId: string
-  userId: string
-  code: string
-  codeLength: string
-  status: SubmissionStatus
-  createdAt: string
-}
+import { createSubmission as createSubmissionQuery } from './query/querier'
 
 export function assertNonNullable<T>(val: T): asserts val is NonNullable<T> {
   if (val === undefined || val === null) {
@@ -24,19 +14,14 @@ export async function createSubmission(
   db: D1Database,
   submission: { userId: string; problemId: string; code: string }
 ) {
-  const createdSubmission = await db
-    .prepare(
-      'insert into submission (id, problemId, userId, code, codeLength, status) values (?, ?, ?, ?, ?, ?) returning *'
-    )
-    .bind(
-      generateAutoId(),
-      submission.problemId,
-      submission.userId,
-      submission.code,
-      submission.code.length,
-      'Judging'
-    )
-    .first<SubmissionModel>()
+  const createdSubmission = await createSubmissionQuery(db, {
+    id: generateAutoId(),
+    problemid: submission.problemId,
+    userid: submission.userId,
+    code: submission.code,
+    codelength: submission.code.length,
+    status: 'Judging',
+  })
   assertNonNullable(createdSubmission)
 
   return createdSubmission

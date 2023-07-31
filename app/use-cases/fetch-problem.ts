@@ -1,25 +1,18 @@
 import { Problem, ProblemDifficulty } from '../model'
-
-type ProblemModel = {
-  id: string
-  title: string
-  content: string
-  difficulty: ProblemDifficulty
-  tests: string
-  playgroundUrl: string
-}
+import { getProblem } from './query/querier'
 
 export async function fetchProblem(
   db: D1Database,
   problemId: string
 ): Promise<Problem> {
-  const problem = await db
-    .prepare('select * from Problem where id = ?')
-    .bind(problemId)
-    .first<ProblemModel>()
-
+  const problem = await getProblem(db, { id: problemId })
   // TODO: 画面側でnullのハンドリングする
   if (problem === null) throw new Error('TODO:')
 
-  return { ...problem, playground_url: problem.playgroundUrl }
+  return {
+    ...problem,
+    difficulty: problem.difficulty as ProblemDifficulty,
+    // TODO: カラムがキャメルケースだと、sql-gen-d1-tsの生成する型が小文字のみになるが、実際にはキャメルケースで返ってくる
+    playground_url: (problem as any).playgroundUrl,
+  }
 }

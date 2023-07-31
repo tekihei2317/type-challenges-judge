@@ -23,7 +23,8 @@ export async function action({ request, context }: ActionArgs) {
   })
 
   return redirect(
-    `/problems/${submission.problemId}/submissions/${submission.id}`
+    // TODO: remove any
+    `/problems/${(submission as any).problemId}/submissions/${submission.id}`
   )
 }
 

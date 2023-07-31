@@ -1,21 +1,13 @@
 import { Problem, ProblemDifficulty } from './../model'
-
-type ProblemModel = {
-  id: string
-  title: string
-  content: string
-  difficulty: ProblemDifficulty
-  tests: string
-  playgroundUrl: string
-}
+import { getAllProblems } from './query/querier'
 
 export async function fetchProblems(db: D1Database): Promise<Problem[]> {
-  const { results } = await db
-    .prepare('select * from Problem')
-    .all<ProblemModel>()
+  const { results } = await getAllProblems(db)
 
   return results.map((problem) => ({
     ...problem,
-    playground_url: problem.playgroundUrl,
+    difficulty: problem.difficulty as ProblemDifficulty,
+    // TODO:
+    playground_url: problem.playgroundurl,
   }))
 }
