@@ -1,3 +1,5 @@
+node_compat = true
+
 [[d1_databases]]
 binding = "DB" # i.e. available in your Worker on env.DB
 database_name = "type-challenges-judge"
