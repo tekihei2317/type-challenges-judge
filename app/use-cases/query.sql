@@ -10,3 +10,12 @@ insert into Submission
 values
   (?, ?, ?, ?, ?, ?)
 returning *;
+
+-- name: findSubmission :one
+select * from Submission where id = ?;
+
+-- name: findUser :one
+select * from User where userId = ?;
+
+-- name: findProblem :one
+select * from Problem where id = ?;

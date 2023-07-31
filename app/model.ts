@@ -27,7 +27,7 @@ export type Submission = {
   codeLength: number
   diagnostics?: string[]
   commentary?: string
-  createdAt: Timestamp
+  createdAt: string
 }
 
 export type UnvalidatedSubmission = {

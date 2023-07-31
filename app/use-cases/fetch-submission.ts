@@ -1,26 +1,21 @@
-import { doc, getDoc } from 'firebase/firestore'
-import {
-  collectionName as CN,
-  Submission,
-  UserSubmissionDocument,
-} from '../model'
-import { db } from '../utils/firebase'
-import { fetchProblem } from './fetch-problem'
-import { findUser } from './find-user'
+import { Submission } from '../model'
+import { assertNonNullable } from './create-submission'
+import { findProblem, findSubmission, findUser } from './query/querier'
 
 export async function fetchSubmission(
-  userId: string,
+  db: D1Database,
   submissionId: string
 ): Promise<Submission | undefined> {
-  const docRef = doc(db, CN.users, userId, CN.submissions, submissionId)
-  const snapshot = await getDoc(docRef)
+  const submission = await findSubmission(db, { id: submissionId })
+  if (submission === null) return undefined
 
-  if (snapshot.exists()) {
-    const documentData = snapshot.data() as UserSubmissionDocument
+  const [problem, user] = await Promise.all([
+    findProblem(db, { id: (submission as any).problemId }),
+    findUser(db, { userid: (submission as any).userId }),
+  ])
+  assertNonNullable(problem)
+  assertNonNullable(user)
 
-    const user = await findUser(userId)
-    const problem = await fetchProblem(documentData.problemId)
-
-    return { id: submissionId, user, problem, ...documentData }
-  }
+  // TODO:
+  return { ...submission, user, problem } as unknown as Submission
 }

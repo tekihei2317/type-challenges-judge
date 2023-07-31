@@ -87,3 +87,78 @@ export async function createSubmission(
     .first<CreateSubmissionRow | null>();
 }
 
+const findSubmissionQuery = `-- name: findSubmission :one
+select id, problemid, userid, code, codelength, status, createdat from Submission where id = ?`;
+
+export type findSubmissionParams = {
+  id: string;
+};
+
+export type findSubmissionRow = {
+  id: string;
+  problemid: string;
+  userid: string;
+  code: string;
+  codelength: number | string;
+  status: string;
+  createdat: string | null;
+};
+
+export async function findSubmission(
+  d1: D1Database,
+  args: findSubmissionParams
+): Promise<findSubmissionRow | null> {
+  return await d1
+    .prepare(findSubmissionQuery)
+    .bind(args.id)
+    .first<findSubmissionRow | null>();
+}
+
+const findUserQuery = `-- name: findUser :one
+select userid, screenname from User where userId = ?`;
+
+export type findUserParams = {
+  userid: string;
+};
+
+export type findUserRow = {
+  userid: string;
+  screenname: string;
+};
+
+export async function findUser(
+  d1: D1Database,
+  args: findUserParams
+): Promise<findUserRow | null> {
+  return await d1
+    .prepare(findUserQuery)
+    .bind(args.userid)
+    .first<findUserRow | null>();
+}
+
+const findProblemQuery = `-- name: findProblem :one
+select id, title, content, difficulty, tests, playgroundurl from Problem where id = ?`;
+
+export type findProblemParams = {
+  id: string;
+};
+
+export type findProblemRow = {
+  id: string;
+  title: string;
+  content: string;
+  difficulty: string;
+  tests: string;
+  playgroundurl: string;
+};
+
+export async function findProblem(
+  d1: D1Database,
+  args: findProblemParams
+): Promise<findProblemRow | null> {
+  return await d1
+    .prepare(findProblemQuery)
+    .bind(args.id)
+    .first<findProblemRow | null>();
+}
+
