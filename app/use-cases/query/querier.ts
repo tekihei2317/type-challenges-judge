@@ -74,7 +74,7 @@ export type CreateSubmissionRow = {
   code: string;
   codelength: number | string;
   status: string;
-  createdat: string | null;
+  createdat: string;
 };
 
 export async function createSubmission(
@@ -101,7 +101,7 @@ export type findSubmissionRow = {
   code: string;
   codelength: number | string;
   status: string;
-  createdat: string | null;
+  createdat: string;
 };
 
 export async function findSubmission(
@@ -160,5 +160,110 @@ export async function findProblem(
     .prepare(findProblemQuery)
     .bind(args.id)
     .first<findProblemRow | null>();
+}
+
+const findMySubmissionsToProblemQuery = `-- name: findMySubmissionsToProblem :many
+select
+  submission.id,
+  submission.code,
+  submission.codeLength as codeLength,
+  submission.status,
+  submission.createdAt as createdAt,
+  user.userId as userUserId,
+  user.screenName as userScreenName
+from
+  Submission submission
+  inner join User user on submissions.userId = user.userId
+where
+  submission.problemId = ?1 and
+  submission.userId = ?2`;
+
+export type findMySubmissionsToProblemParams = {
+  problemId: string;
+  userId: string;
+};
+
+export type findMySubmissionsToProblemRow = {
+  id: string;
+  code: string;
+  codeLength: number | string;
+  status: string;
+  createdAt: string;
+  userUserId: string;
+  userScreenName: string;
+};
+
+export async function findMySubmissionsToProblem(
+  d1: D1Database,
+  args: findMySubmissionsToProblemParams
+): Promise<D1Result<findMySubmissionsToProblemRow>> {
+  return await d1
+    .prepare(findMySubmissionsToProblemQuery)
+    .bind(args.problemId, args.userId)
+    .all<findMySubmissionsToProblemRow>();
+}
+
+const countSubmissionsToProblemQuery = `-- name: countSubmissionsToProblem :one
+select count(*) as submissionCount from Submission where problemId = ?1`;
+
+export type countSubmissionsToProblemParams = {
+  problemId: string;
+};
+
+export type countSubmissionsToProblemRow = {
+  submissionCount: number;
+};
+
+export async function countSubmissionsToProblem(
+  d1: D1Database,
+  args: countSubmissionsToProblemParams
+): Promise<countSubmissionsToProblemRow | null> {
+  return await d1
+    .prepare(countSubmissionsToProblemQuery)
+    .bind(args.problemId)
+    .first<countSubmissionsToProblemRow | null>();
+}
+
+const findSubmissionsToProblemQuery = `-- name: findSubmissionsToProblem :many
+select
+  submission.id,
+  submission.code,
+  submission.codeLength as codeLength,
+  submission.status,
+  submission.createdAt as createdAt,
+  user.userId as userUserId,
+  user.screenName as userScreenName
+from
+  Submission submission
+  inner join User user on submission.userId = user.userId
+where
+  Submission.problemId = ?
+limit ?
+offset ?`;
+
+export type findSubmissionsToProblemParams = {
+  problemId: string;
+  limit: number;
+  offset: number;
+};
+
+export type findSubmissionsToProblemRow = {
+  id: string;
+  code: string;
+  codeLength: number | string;
+  status: string;
+  createdAt: string;
+  userUserId: string;
+  userScreenName: string;
+};
+
+export async function findSubmissionsToProblem(
+  d1: D1Database,
+  args: findSubmissionsToProblemParams
+): Promise<D1Result<findSubmissionsToProblemRow>> {
+  return await d1
+    .prepare(findSubmissionsToProblemQuery)
+    .bind(args.problemId, args.limit, args.offset)
+    .all<findSubmissionsToProblemRow>();
 }
 

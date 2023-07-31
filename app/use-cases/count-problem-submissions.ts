@@ -1,16 +1,12 @@
-import { collection, getDocs, limit, orderBy, query } from 'firebase/firestore'
-import { db } from '../utils/firebase'
+import { assertNonNullable } from '../utils/assertion'
+import { countSubmissionsToProblem } from './query/querier'
 
-export async function countProblemSubmissions(problemId: string) {
-  const submissionsRef = collection(db, 'problems', problemId, 'submissions')
-  const q = query(submissionsRef, orderBy('order', 'desc'), limit(1))
+export async function countProblemSubmissions(
+  db: D1Database,
+  problemId: string
+): Promise<number> {
+  const result = await countSubmissionsToProblem(db, { problemId })
+  assertNonNullable(result)
 
-  const querySnapshot = await getDocs(q)
-
-  if (querySnapshot.docs.length === 0) {
-    return 0
-  }
-
-  // 0-indexedなので+1する
-  return querySnapshot.docs[0].data().order + 1
+  return result.count
 }

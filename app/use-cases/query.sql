@@ -19,3 +19,39 @@ select * from User where userId = ?;
 
 -- name: findProblem :one
 select * from Problem where id = ?;
+
+-- name: findMySubmissionsToProblem :many
+select
+  submission.id,
+  submission.code,
+  submission.codeLength as codeLength,
+  submission.status,
+  submission.createdAt as createdAt,
+  user.userId as userUserId,
+  user.screenName as userScreenName
+from
+  Submission submission
+  inner join User user on submissions.userId = user.userId
+where
+  submission.problemId = @problemId and
+  submission.userId = @userId;
+
+-- name: countSubmissionsToProblem :one
+select count(*) as submissionCount from Submission where problemId = @problemId;
+
+-- name: findSubmissionsToProblem :many
+select
+  submission.id,
+  submission.code,
+  submission.codeLength as codeLength,
+  submission.status,
+  submission.createdAt as createdAt,
+  user.userId as userUserId,
+  user.screenName as userScreenName
+from
+  Submission submission
+  inner join User user on submission.userId = user.userId
+where
+  Submission.problemId = @problemId
+limit ?
+offset ?;

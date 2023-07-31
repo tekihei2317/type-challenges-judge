@@ -1,5 +1,5 @@
 import { Submission } from '../model'
-import { assertNonNullable } from './create-submission'
+import { assertNonNullable } from '../utils/assertion'
 import { findProblem, findSubmission, findUser } from './query/querier'
 
 export async function fetchSubmission(

@@ -24,7 +24,7 @@ export type Submission = {
   code: string;
   codelength: number | string;
   status: string;
-  createdat: string | null;
+  createdat: string;
 };
 
 export type Judgement = {
