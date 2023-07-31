@@ -1,23 +1,43 @@
-import { addDoc, setDoc } from 'firebase/firestore'
-import { UnvalidatedSubmission, RootSubmissionDocument } from '../model'
-import { submissionsRef, userSubmissionRef } from '../utils/firestore-reference'
-import { fetchSubmission } from './fetch-submission'
+import { SubmissionStatus } from '../model'
+import { generateAutoId } from '../utils/record-id'
+
+type SubmissionModel = {
+  id: string
+  problemId: string
+  userId: string
+  code: string
+  codeLength: string
+  status: SubmissionStatus
+  createdAt: string
+}
+
+export function assertNonNullable<T>(val: T): asserts val is NonNullable<T> {
+  if (val === undefined || val === null) {
+    throw new Error(`Expected 'val' to be defined, but received ${val}`)
+  }
+}
 
 /**
  * Submit user's solution
  */
 export async function createSubmission(
-  userId: string,
-  submission: UnvalidatedSubmission
+  db: D1Database,
+  submission: { userId: string; problemId: string; code: string }
 ) {
-  const rootSubmission: RootSubmissionDocument = {
-    userId,
-    problemId: submission.problemId,
-  }
-  const submissionRef = await addDoc(submissionsRef(), rootSubmission)
+  const createdSubmission = await db
+    .prepare(
+      'insert into submission (id, problemId, userId, code, codeLength, status) values (?, ?, ?, ?, ?, ?) returning *'
+    )
+    .bind(
+      generateAutoId(),
+      submission.problemId,
+      submission.userId,
+      submission.code,
+      submission.code.length,
+      'Judging'
+    )
+    .first<SubmissionModel>()
+  assertNonNullable(createdSubmission)
 
-  const ref = userSubmissionRef(userId, submissionRef.id)
-  setDoc(ref, submission)
-
-  return fetchSubmission(userId, ref.id)
+  return createdSubmission
 }

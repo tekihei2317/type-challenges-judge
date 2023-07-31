@@ -36,7 +36,6 @@ const ProfileMenu = ({ user, handleLogout }: ProfileMenuProps) => {
     <Menu placement={'bottom-end'}>
       <MenuButton as={Button}>{user?.screenName}</MenuButton>
       <MenuList>
-        <MenuItem>プロフィール</MenuItem>
         <MenuItem onClick={handleLogout}>ログアウト</MenuItem>
       </MenuList>
     </Menu>

@@ -1,72 +1,53 @@
-import {
-  Alert,
-  AlertIcon,
-  Box,
-  Button,
-  Stack,
-  Textarea,
-} from '@chakra-ui/react'
-import React, { useMemo, useState } from 'react'
+import { Alert, AlertIcon, Button, Stack, Textarea } from '@chakra-ui/react'
 import { createSubmission } from '../use-cases/create-submission'
 import { useAuth } from '../hooks/useAuth'
-import { UnvalidatedSubmission } from '../model'
-import { useOutletContext, useNavigate } from '@remix-run/react'
+import { useOutletContext, Form } from '@remix-run/react'
 import { ProblemLayoutContext } from './problems.$problemId'
-import { serverTimestamp, Timestamp } from 'firebase/firestore'
+import { ActionArgs, redirect } from '@remix-run/cloudflare'
+import invariant from 'tiny-invariant'
+
+export async function action({ request, context }: ActionArgs) {
+  const body = await request.formData()
+  const userId = await body.get('userId') // TODO: ユーザーIDは認証情報から取得する
+  const problemId = await body.get('problemId')
+  const code = await body.get('code')
+
+  invariant(typeof userId === 'string', 'userId must be a string')
+  invariant(typeof problemId === 'string', 'problemId must be a string')
+  invariant(typeof code === 'string', 'code must be a string')
+
+  const submission = await createSubmission(context.env.DB, {
+    userId,
+    problemId,
+    code,
+  })
+
+  return redirect(
+    `/problems/${submission.problemId}/submissions/${submission.id}`
+  )
+}
 
 export default function SubmitPage() {
-  const [code, setCode] = useState<string>('')
   const { user } = useAuth()
   const { problem } = useOutletContext<ProblemLayoutContext>()
-  const navigate = useNavigate()
-
-  const [isShowAlert, setIsShowAlert] = useState<boolean>(false)
-
-  const handleInputChange = (event: React.FormEvent<HTMLTextAreaElement>) => {
-    setCode(event.currentTarget.value)
-  }
-
-  const handleSubmit = async () => {
-    if (user === undefined) {
-      setIsShowAlert(true)
-      return
-    }
-
-    const submission: UnvalidatedSubmission = {
-      problemId: problem.id,
-      code,
-      codeLength: code.length,
-      status: 'Judging',
-      createdAt: serverTimestamp() as Timestamp,
-    }
-
-    const userSubmission = await createSubmission(user.userId, submission)
-
-    if (userSubmission !== undefined) {
-      navigate(`/problems/${problem.id}/submissions/${userSubmission.id}`)
-    }
-  }
-
-  const canSubmit = useMemo(() => code.length > 0, [code])
+  const canSubmit = user !== undefined
 
   return (
     <Stack gap={2}>
-      {isShowAlert && (
+      {!user && (
         <Alert status="warning" borderRadius={4}>
           <AlertIcon />
           提出するにはログインしてください
         </Alert>
       )}
-      <Textarea onInput={handleInputChange} height={'xs'} />
-      <Box>
-        <Button
-          disabled={!canSubmit}
-          colorScheme={'blue'}
-          onClick={handleSubmit}
-        >
+      <Form method="POST">
+        <input type="hidden" name="userId" value={user?.userId ?? ''} />
+        <input type="hidden" name="problemId" value={problem.id} />
+        <Textarea name="code" height={'xs'} />
+        <Button type="submit" disabled={!canSubmit} colorScheme={'blue'} mt={4}>
           提出する
         </Button>
-      </Box>
+      </Form>
     </Stack>
   )
 }

@@ -7,7 +7,6 @@ import {
 import { useContext, useMemo } from 'react'
 import { FirebaseContext, UserContext } from '../utils/context'
 import { User } from '../model'
-import { writeUser } from '../use-cases/write-user'
 
 const provider = new GithubAuthProvider()
 
@@ -23,23 +22,23 @@ export const useAuth = () => {
   }
 
   const handleLogin = () => {
-    signInWithPopup(firebaseAuth, provider)
-      .then((result) => {
-        const userInfo = getAdditionalUserInfo(result)
-        if (userInfo === null) return
+    signInWithPopup(firebaseAuth, provider).then(async (result) => {
+      const userInfo = getAdditionalUserInfo(result)
+      if (userInfo === null) return
 
-        const user: User = {
-          userId: result.user.uid,
-          // FIXME: エミュレータでは名前が取得できなかったため、適当な値を入れている
-          screenName: userInfo.username ?? 'test_user',
-        }
-        writeUser(result.user.uid, user)
+      const user: User = {
+        userId: result.user.uid,
+        // FIXME: エミュレータでは名前が取得できなかったため、適当な値を入れている
+        screenName: userInfo.username ?? 'test_user',
+      }
 
-        setUser(user)
+      await fetch('/api/write-user', {
+        method: 'POST',
+        body: JSON.stringify(user),
       })
-      .catch(() => {
-        // TODO:
-      })
+
+      setUser(user)
+    })
   }
   const handleLogout = () => signOut(firebaseAuth)
   const isLoggedIn = useMemo(() => user !== undefined, [user])
