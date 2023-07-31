@@ -1,9 +1,21 @@
-import { collectionName, Problem } from './../model'
-import { collection, getDocs } from 'firebase/firestore'
-import { db } from '../utils/firebase'
+import { Problem, ProblemDifficulty } from './../model'
 
-export async function fetchProblems(): Promise<Problem[]> {
-  const querySnapshot = await getDocs(collection(db, collectionName.problems))
+type ProblemModel = {
+  id: string
+  title: string
+  content: string
+  difficulty: ProblemDifficulty
+  tests: string
+  playgroundUrl: string
+}
 
-  return querySnapshot.docs.map((problemSnap) => problemSnap.data() as Problem)
+export async function fetchProblems(db: D1Database): Promise<Problem[]> {
+  const { results } = await db
+    .prepare('select * from Problem')
+    .all<ProblemModel>()
+
+  return results.map((problem) => ({
+    ...problem,
+    playground_url: problem.playgroundUrl,
+  }))
 }

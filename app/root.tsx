@@ -1,4 +1,4 @@
-import { Outlet, Scripts } from '@remix-run/react'
+import { LiveReload, Outlet, Scripts } from '@remix-run/react'
 import { AppProvider } from './components/AppProvider'
 import { DefaultLayout } from './components/DefaultLayout'
 
@@ -33,6 +33,7 @@ export default function Root() {
             </DefaultLayout>
           </AppProvider>
           <Scripts />
+          <LiveReload />
         </div>
       </body>
     </html>

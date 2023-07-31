@@ -22,7 +22,7 @@ export default {
     const quizez: Quiz[] = await request.json()
     try {
       await seed(env.DB, quizez)
-      return new Response(quizez.length.toString())
+      return new Response('Seeding succeeded')
     } catch (e) {
       return new Response(e.message)
     }

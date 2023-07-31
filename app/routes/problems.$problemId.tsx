@@ -1,8 +1,9 @@
 import { Container, Text, Flex, Button } from '@chakra-ui/react'
-import { useEffect, useState } from 'react'
-import { Link, Outlet, useLocation, useParams } from '@remix-run/react'
+import { Link, Outlet, useLoaderData, useLocation } from '@remix-run/react'
 import { fetchProblem } from '../use-cases/fetch-problem'
 import { Problem } from '../model'
+import { json, LoaderArgs } from '@remix-run/cloudflare'
+import invariant from 'tiny-invariant'
 
 export type ProblemLayoutContext = {
   problem: Problem
@@ -38,21 +39,19 @@ const TabButton = ({ path, currentPath, children }: TabButtonProps) => {
   )
 }
 
-export default function ProblemLayout() {
-  const { problemId } = useParams()
+export async function loader({ context, params }: LoaderArgs) {
+  invariant(params.problemId, 'params.problemId is required')
+  const problem = await fetchProblem(context.env.DB, params.problemId)
 
-  const [problem, setProblem] = useState<Problem | undefined>()
+  return json({ problem })
+}
+
+export default function ProblemLayout() {
+  const { problem } = useLoaderData<typeof loader>()
+
   const location = useLocation()
 
-  useEffect(() => {
-    const loadData = async () => {
-      if (problemId === undefined) return
-      setProblem(await fetchProblem(problemId))
-    }
-    loadData()
-  }, [problemId])
-
-  const basePath = `/problems/${problemId}`
+  const basePath = `/problems/${problem.id}`
   const paths = {
     problem: basePath,
     submit: `${basePath}/submit`,
@@ -62,7 +61,7 @@ export default function ProblemLayout() {
   return (
     <Container maxW={'container.xl'}>
       <Text fontSize="xl" fontWeight={'bold'} mt={8}>
-        {problem?.title}
+        {problem.title}
       </Text>
       <Flex
         gap={1}

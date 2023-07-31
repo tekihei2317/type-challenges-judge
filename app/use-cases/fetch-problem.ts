@@ -1,9 +1,25 @@
-import { doc, getDoc } from 'firebase/firestore'
-import { collectionName, Problem } from '../model'
-import { db } from '../utils/firebase'
+import { Problem, ProblemDifficulty } from '../model'
 
-export async function fetchProblem(problemId: string): Promise<Problem> {
-  const problemRef = await getDoc(doc(db, collectionName.problems, problemId))
+type ProblemModel = {
+  id: string
+  title: string
+  content: string
+  difficulty: ProblemDifficulty
+  tests: string
+  playgroundUrl: string
+}
 
-  return problemRef.data() as Problem
+export async function fetchProblem(
+  db: D1Database,
+  problemId: string
+): Promise<Problem> {
+  const problem = await db
+    .prepare('select * from Problem where id = ?')
+    .bind(problemId)
+    .first<ProblemModel>()
+
+  // TODO: 画面側でnullのハンドリングする
+  if (problem === null) throw new Error('TODO:')
+
+  return { ...problem, playground_url: problem.playgroundUrl }
 }

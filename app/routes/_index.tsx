@@ -10,6 +10,8 @@ import { fetchProblems } from '../use-cases/fetch-problems'
 import { fetchProblemResults } from '../use-cases/fetch-problem-results'
 import { useAuth } from '../hooks/useAuth'
 import { ProblemList } from '../components/ProblemsList'
+import { json, LoaderArgs } from '@remix-run/cloudflare'
+import { useLoaderData } from '@remix-run/react'
 
 const difficultyFilter =
   (difficulty: ProblemDifficulty) => (problem: Problem) =>
@@ -19,9 +21,15 @@ type ProblemStatusMap = {
   [problemId: string]: ProblemResultStatus
 }
 
+export async function loader({ context }: LoaderArgs) {
+  const problems = await fetchProblems(context.env.DB)
+
+  return json({ problems })
+}
+
 export default function IndexPage() {
   const { user } = useAuth()
-  const [problems, setProblems] = useState<Problem[]>([])
+  const { problems } = useLoaderData<typeof loader>()
   const [problemResults, setProblemResults] = useState<ProblemResultDocument[]>(
     []
   )
@@ -38,9 +46,9 @@ export default function IndexPage() {
 
   useEffect(() => {
     const loadData = () => {
-      fetchProblems().then((data) => setProblems(data))
       if (user !== undefined) {
-        fetchProblemResults(user.userId).then((data) => setProblemResults(data))
+        // TODO:
+        // fetchProblemResults(user.userId).then((data) => setProblemResults(data))
       }
     }
 
