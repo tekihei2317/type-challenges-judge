@@ -24,6 +24,7 @@
     "@remix-run/react": "^1.19.1",
     "chart.js": "^3.8.0",
     "firebase": "^9.8.1",
+    "firebase-auth-cloudflare-workers": "^1.0.1",
     "framer-motion": "^6",
     "isbot": "^3.6.13",
     "lz-string": "^1.5.0",

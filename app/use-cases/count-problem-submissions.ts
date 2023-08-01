@@ -8,5 +8,5 @@ export async function countProblemSubmissions(
   const result = await countSubmissionsToProblem(db, { problemId })
   assertNonNullable(result)
 
-  return result.count
+  return result.submissionCount
 }

@@ -7,31 +7,15 @@ import { onAuthStateChanged } from 'firebase/auth'
 import { findUser } from '../use-cases/find-user'
 
 type AppProvierProps = {
+  user: User | undefined
   children: React.ReactNode
 }
 
-export const AppProvider = ({ children }: AppProvierProps) => {
-  const [user, setUser] = useState<User>()
-
-  useEffect(() => {
-    onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        // sign in
-        const currentUser = await findUser(firebaseUser.uid)
-        setUser(currentUser)
-      } else {
-        // sign out
-        setUser(undefined)
-      }
-    })
-  }, [])
-
+export const AppProvider = ({ children, user }: AppProvierProps) => {
   return (
     <ChakraProvider>
       <FirebaseContext.Provider value={{ auth }}>
-        <UserContext.Provider value={{ user, setUser }}>
-          {children}
-        </UserContext.Provider>
+        <UserContext.Provider value={{ user }}>{children}</UserContext.Provider>
       </FirebaseContext.Provider>
     </ChakraProvider>
   )

@@ -6133,6 +6133,11 @@ find-up@^5.0.0:
     locate-path "^6.0.0"
     path-exists "^4.0.0"
 
+firebase-auth-cloudflare-workers@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/firebase-auth-cloudflare-workers/-/firebase-auth-cloudflare-workers-1.0.1.tgz#1cb374bb69eaf2d95e20bcae4685be3b65823a3d"
+  integrity sha512-gkFTpxnsbpRvLo5HGGgK8KvC+El5RmiIKeQCn3guy9vhdGhRcixXMXJ0VoeNWl1MciOgy94KwyhQ3zPKzF2PYg==
+
 firebase-frameworks@^0.4.2:
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/firebase-frameworks/-/firebase-frameworks-0.4.2.tgz#f112f8afeec35b5532d8b9bbb2886f9cff68f61b"

@@ -1,8 +1,15 @@
-import { LiveReload, Outlet, Scripts } from '@remix-run/react'
+import { json, LoaderArgs } from '@remix-run/cloudflare'
+import { LiveReload, Outlet, Scripts, useLoaderData } from '@remix-run/react'
 import { AppProvider } from './components/AppProvider'
 import { DefaultLayout } from './components/DefaultLayout'
 
+export function loader({ context }: LoaderArgs) {
+  return json({ user: context.user })
+}
+
 export default function Root() {
+  const { user } = useLoaderData<typeof loader>()
+
   return (
     <html lang="en">
       <head>
@@ -27,7 +34,7 @@ export default function Root() {
       </head>
       <body>
         <div id="root">
-          <AppProvider>
+          <AppProvider user={user}>
             <DefaultLayout>
               <Outlet />
             </DefaultLayout>

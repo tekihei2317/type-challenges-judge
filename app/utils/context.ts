@@ -7,7 +7,6 @@ type FirebaseContextValue = {
 }
 type UserContextValue = {
   user?: User
-  setUser?: (user: User) => void
 }
 
 export const FirebaseContext = createContext<FirebaseContextValue>({})
