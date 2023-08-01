@@ -1,5 +1,5 @@
-import { User } from '../model'
-import { assertNonNullable } from '../utils/assertion'
+import { User } from './core/type-challenges-judge'
+import { assertNonNullable } from './utils/assertion'
 import {
   countSubmissionsToProblem,
   findMySubmissionsToProblem,

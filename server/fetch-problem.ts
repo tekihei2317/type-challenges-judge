@@ -1,4 +1,4 @@
-import { Problem, ProblemDifficulty } from '../model'
+import { Problem, ProblemDifficulty } from './core/type-challenges-judge'
 import { getProblem } from './query/querier'
 
 export async function fetchProblem(

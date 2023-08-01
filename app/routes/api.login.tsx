@@ -4,7 +4,7 @@ import {
   FirebaseIdToken,
   WorkersKVStoreSingle,
 } from 'firebase-auth-cloudflare-workers'
-import { commitSession, getSession } from '../server/session'
+import { commitSession, getSession } from '../../server/utils/session'
 
 async function verifyJWT(
   jwt: string,

@@ -1,5 +1,5 @@
-import { assertNonNullable } from '../utils/assertion'
-import { generateAutoId } from '../utils/record-id'
+import { assertNonNullable } from '../app/utils/assertion'
+import { generateAutoId } from './utils/record-id'
 import { createSubmission as createSubmissionQuery } from './query/querier'
 
 /**

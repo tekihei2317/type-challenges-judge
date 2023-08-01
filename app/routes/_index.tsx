@@ -6,7 +6,7 @@ import {
   ProblemResultDocument,
   ProblemResultStatus,
 } from '../model'
-import { fetchProblems } from '../use-cases/fetch-problems'
+import { fetchProblems } from '../../server/fetch-problems'
 import { fetchProblemResults } from '../use-cases/fetch-problem-results'
 import { useAuth } from '../hooks/useAuth'
 import { ProblemList } from '../components/ProblemsList'

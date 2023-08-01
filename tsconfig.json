@@ -16,6 +16,6 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["app"],
+  "include": ["app", "server/utils/record-id.ts", "server"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

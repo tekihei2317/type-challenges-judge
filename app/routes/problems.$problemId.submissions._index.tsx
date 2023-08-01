@@ -20,7 +20,7 @@ import {
   useOutletContext,
 } from '@remix-run/react'
 import { SubmissionStatus } from '../model'
-import { fetchProblemSubmissions } from '../use-cases/fetch-problem-submissions'
+import { fetchProblemSubmissions } from '../../server/fetch-problem-submissions'
 import { ProblemLayoutContext } from './problems.$problemId'
 import { SubmissionStatusBadge } from '../components/SubmissionStatusBadge'
 import { generatePages, PageType } from '../utils/pagination'
@@ -38,8 +38,7 @@ export async function loader({ context, params, request }: LoaderArgs) {
   const scope = query.get('scope') === 'all' ? 'all' : 'me'
   const page = query.get('page') !== null ? Number(query.get('page')) : 1
   const pageLimit = 20
-  // TODO: 認証情報からユーザーIDを取得する
-  const userId = scope === 'me' ? 'WHEmuE9ySqTfsWqE949HU5gBFTYe' : undefined
+  const userId = scope === 'me' ? context.user?.userId : undefined
 
   const { count, submissions } = await fetchProblemSubmissions(
     context.env.DB,

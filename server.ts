@@ -1,7 +1,7 @@
 import { logDevReady } from '@remix-run/cloudflare'
 import { createPagesFunctionHandler } from '@remix-run/cloudflare-pages'
 import * as build from '@remix-run/dev/server-build'
-import { getSession } from './app/server/session'
+import { getSession } from './server/utils/session'
 
 if (process.env.NODE_ENV === 'development') {
   logDevReady(build)

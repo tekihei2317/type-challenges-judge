@@ -11,9 +11,7 @@
     "db:seed": "node database/seed-runner.js",
     "check-format": "prettier --check .",
     "lint": "eslint --ext .js,.ts,.tsx .",
-    "validate": "npm run check-format && npm run lint",
-    "test:rules": "firebase emulators:exec --only firestore 'vitest run'",
-    "test:rules-watch": "firebase emulators:exec --only firestore vitest"
+    "validate": "npm run check-format && npm run lint"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.0.0",

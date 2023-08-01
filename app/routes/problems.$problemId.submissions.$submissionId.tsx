@@ -21,7 +21,7 @@ import {
 import { CodeBlock } from '../components/CodeBlock'
 import { ProblemLayoutContext } from './problems.$problemId'
 import { SubmissionStatusBadge } from '../components/SubmissionStatusBadge'
-import { fetchSubmission } from '../use-cases/fetch-submission'
+import { fetchSubmission } from '../../server/fetch-submission'
 import { changeToCodeMarkdown } from '../utils/code-block'
 import { json, LoaderArgs } from '@remix-run/cloudflare'
 import invariant from 'tiny-invariant'

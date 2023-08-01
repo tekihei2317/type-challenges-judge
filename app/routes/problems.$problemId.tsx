@@ -1,6 +1,6 @@
 import { Container, Text, Flex, Button } from '@chakra-ui/react'
 import { Link, Outlet, useLoaderData, useLocation } from '@remix-run/react'
-import { fetchProblem } from '../use-cases/fetch-problem'
+import { fetchProblem } from '../../server/fetch-problem'
 import { Problem } from '../model'
 import { json, LoaderArgs } from '@remix-run/cloudflare'
 import invariant from 'tiny-invariant'

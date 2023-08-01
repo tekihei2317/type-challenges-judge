@@ -1,5 +1,5 @@
 import { assertNonNullable } from '../utils/assertion'
-import { countSubmissionsToProblem } from './query/querier'
+import { countSubmissionsToProblem } from '../../server/query/querier'
 
 export async function countProblemSubmissions(
   db: D1Database,

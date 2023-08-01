@@ -1,5 +1,5 @@
 import { ProblemDifficulty } from '../model'
-import { fetchProblems } from './fetch-problems'
+import { fetchProblems } from '../../server/fetch-problems'
 
 export type ProblemCounts = {
   [difficulty in ProblemDifficulty]: number

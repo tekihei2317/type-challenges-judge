@@ -1,5 +1,5 @@
 import { Alert, AlertIcon, Button, Stack, Textarea } from '@chakra-ui/react'
-import { createSubmission } from '../use-cases/create-submission'
+import { createSubmission } from '../../server/create-submission'
 import { useAuth } from '../hooks/useAuth'
 import { useOutletContext, Form } from '@remix-run/react'
 import { ProblemLayoutContext } from './problems.$problemId'
@@ -8,11 +8,12 @@ import invariant from 'tiny-invariant'
 
 export async function action({ request, context }: ActionArgs) {
   const body = await request.formData()
-  const userId = await body.get('userId') // TODO: ユーザーIDは認証情報から取得する
+  invariant(context.user, 'ログインが必要です')
+
+  const userId = context.user.userId
   const problemId = await body.get('problemId')
   const code = await body.get('code')
 
-  invariant(typeof userId === 'string', 'userId must be a string')
   invariant(typeof problemId === 'string', 'problemId must be a string')
   invariant(typeof code === 'string', 'code must be a string')
 
@@ -42,7 +43,6 @@ export default function SubmitPage() {
         </Alert>
       )}
       <Form method="POST">
-        <input type="hidden" name="userId" value={user?.userId ?? ''} />
         <input type="hidden" name="problemId" value={problem.id} />
         <Textarea name="code" height={'xs'} />
         <Button type="submit" disabled={!canSubmit} colorScheme={'blue'} mt={4}>
