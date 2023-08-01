@@ -12,7 +12,7 @@ export default function ProblemPage() {
       <Box>
         <Wrap p={1} pl={0.5} mb={6}>
           <Link
-            href={problem.playground_url}
+            href={problem.playgroundUrl}
             isExternal
             style={{ textDecoration: 'none' }}
           >

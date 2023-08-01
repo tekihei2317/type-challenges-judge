@@ -43,11 +43,13 @@ export async function action({ request, context: { env } }: ActionArgs) {
 
   // ユーザーをデータベースに登録する
   const user: User = { userId: firebaseToken.uid, screenName: body.screenName }
-  const userInDb = await env.DB.prepare('select * from user where userId = ?')
+  const userInDb = await env.DB.prepare('select * from user where user_id = ?')
     .bind(user.userId)
     .first<User>()
   if (userInDb === null) {
-    await env.DB.prepare('insert into User (userId, screenName) values (?, ?)')
+    await env.DB.prepare(
+      'insert into user (user_id, screen_name) values (?, ?)'
+    )
       .bind(user.userId, user.screenName)
       .run()
   }

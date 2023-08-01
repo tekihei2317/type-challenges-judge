@@ -13,7 +13,7 @@ export type Problem = {
   content: string
   difficulty: ProblemDifficulty
   tests: string
-  playground_url: string
+  playgroundUrl: string
 }
 
 export type SubmissionStatus = 'Judging' | 'Accepted' | 'Wrong Answer'

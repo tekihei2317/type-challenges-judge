@@ -1,59 +1,59 @@
 -- name: getAllProblems :many
-select * from Problem;
+select * from problem;
 
 -- name: getProblem :one
-select * from Problem where id = ?;
+select * from problem where id = ?;
 
 -- name: CreateSubmission :one
-insert into Submission
-  (id, problemid, userid, code, codelength, status)
+insert into submission
+  (id, problem_id, user_id, code, code_length, status)
 values
   (?, ?, ?, ?, ?, ?)
 returning *;
 
 -- name: findSubmission :one
-select * from Submission where id = ?;
+select * from submission where id = ?;
 
 -- name: findUser :one
-select * from User where userId = ?;
+select * from user where user_id = ?;
 
 -- name: findProblem :one
-select * from Problem where id = ?;
+select * from problem where id = ?;
 
 -- name: findMySubmissionsToProblem :many
 select
   submission.id,
   submission.code,
-  submission.codeLength as codeLength,
+  submission.code_length as codeLength,
   submission.status,
-  submission.createdAt as createdAt,
-  user.userId as userUserId,
-  user.screenName as userScreenName
+  submission.created_at as createdAt,
+  user.user_id as userUserId,
+  user.screen_name as userScreenName
 from
-  Submission submission
-  inner join User user on submission.userId = user.userId
+  submission submission
+  inner join user user on submission.user_id = user.user_id
 where
-  submission.problemId = @problemId and
-  submission.userId = @userId
-order by submission.createdAt desc;
+  submission.problem_id = @problemId and
+  submission.user_id = @userId
+order by submission.created_at desc;
 
 -- name: countSubmissionsToProblem :one
-select count(*) as submissionCount from Submission where problemId = @problemId;
+select count(*) as submissionCount from submission where problem_id = @problemId;
 
 -- name: findSubmissionsToProblem :many
 select
   submission.id,
   submission.code,
-  submission.codeLength as codeLength,
+  submission.code_length as codeLength,
   submission.status,
-  submission.createdAt as createdAt,
-  user.userId as userUserId,
-  user.screenName as userScreenName
+  submission.created_at as createdAt,
+  user.user_id as userUserId,
+  user.screen_name as userScreenName
 from
-  Submission submission
-  inner join User user on submission.userId = user.userId
+  submission submission
+  inner join user user on submission.userId = user.userId
 where
-  Submission.problemId = @problemId
-order by submission.createdAt desc
+  submission.problem_id = @problemId
+order by submission.created_at desc
 limit ?
 offset ?;

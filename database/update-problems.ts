@@ -37,7 +37,7 @@ export async function updateProblems(db: D1Database, quizes: Quiz[]) {
       // TODO: upsertする
       return db
         .prepare(
-          'insert into Problem (id, title, content, difficulty, tests, playgroundUrl) values (?, ?, ?, ?, ?, ?);'
+          'insert into problem (id, title, content, difficulty, tests, playground_url) values (?, ?, ?, ?, ?, ?);'
         )
         .bind(
           problem.id,

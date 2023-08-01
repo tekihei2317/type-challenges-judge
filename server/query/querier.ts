@@ -6,7 +6,7 @@
 import { D1Database, D1Result } from "@cloudflare/workers-types/2022-11-30"
 
 const getAllProblemsQuery = `-- name: getAllProblems :many
-select id, title, content, difficulty, tests, playgroundurl from Problem`;
+select id, title, content, difficulty, tests, playground_url from problem`;
 
 export type getAllProblemsRow = {
   id: string;
@@ -14,7 +14,16 @@ export type getAllProblemsRow = {
   content: string;
   difficulty: string;
   tests: string;
-  playgroundurl: string;
+  playgroundUrl: string;
+};
+
+type RawgetAllProblemsRow = {
+  id: string;
+  title: string;
+  content: string;
+  difficulty: string;
+  tests: string;
+  playground_url: string;
 };
 
 export async function getAllProblems(
@@ -22,11 +31,22 @@ export async function getAllProblems(
 ): Promise<D1Result<getAllProblemsRow>> {
   return await d1
     .prepare(getAllProblemsQuery)
-    .all<getAllProblemsRow>();
+    .all<RawgetAllProblemsRow>()
+    .then((r: D1Result<RawgetAllProblemsRow>) => { return {
+      ...r,
+      results: r.results.map((raw: RawgetAllProblemsRow) => { return {
+        id: raw.id,
+        title: raw.title,
+        content: raw.content,
+        difficulty: raw.difficulty,
+        tests: raw.tests,
+        playgroundUrl: raw.playground_url,
+      }}),
+    }});
 }
 
 const getProblemQuery = `-- name: getProblem :one
-select id, title, content, difficulty, tests, playgroundurl from Problem where id = ?`;
+select id, title, content, difficulty, tests, playground_url from problem where id = ?`;
 
 export type getProblemParams = {
   id: string;
@@ -38,7 +58,16 @@ export type getProblemRow = {
   content: string;
   difficulty: string;
   tests: string;
-  playgroundurl: string;
+  playgroundUrl: string;
+};
+
+type RawgetProblemRow = {
+  id: string;
+  title: string;
+  content: string;
+  difficulty: string;
+  tests: string;
+  playground_url: string;
 };
 
 export async function getProblem(
@@ -48,33 +77,51 @@ export async function getProblem(
   return await d1
     .prepare(getProblemQuery)
     .bind(args.id)
-    .first<getProblemRow | null>();
+    .first<RawgetProblemRow | null>()
+    .then((raw: RawgetProblemRow | null) => raw ? {
+      id: raw.id,
+      title: raw.title,
+      content: raw.content,
+      difficulty: raw.difficulty,
+      tests: raw.tests,
+      playgroundUrl: raw.playground_url,
+    } : null);
 }
 
 const createSubmissionQuery = `-- name: CreateSubmission :one
-insert into Submission
-  (id, problemid, userid, code, codelength, status)
+insert into submission
+  (id, problem_id, user_id, code, code_length, status)
 values
   (?, ?, ?, ?, ?, ?)
-returning id, problemid, userid, code, codelength, status, createdat`;
+returning id, problem_id, user_id, code, code_length, status, created_at`;
 
 export type CreateSubmissionParams = {
   id: string;
-  problemid: string;
-  userid: string;
+  problemId: string;
+  userId: string;
   code: string;
-  codelength: number | string;
+  codeLength: number | string;
   status: string;
 };
 
 export type CreateSubmissionRow = {
   id: string;
-  problemid: string;
-  userid: string;
+  problemId: string;
+  userId: string;
   code: string;
-  codelength: number | string;
+  codeLength: number | string;
   status: string;
-  createdat: string;
+  createdAt: string;
+};
+
+type RawCreateSubmissionRow = {
+  id: string;
+  problem_id: string;
+  user_id: string;
+  code: string;
+  code_length: number | string;
+  status: string;
+  created_at: string;
 };
 
 export async function createSubmission(
@@ -83,12 +130,21 @@ export async function createSubmission(
 ): Promise<CreateSubmissionRow | null> {
   return await d1
     .prepare(createSubmissionQuery)
-    .bind(args.id, args.problemid, args.userid, args.code, args.codelength, args.status)
-    .first<CreateSubmissionRow | null>();
+    .bind(args.id, args.problemId, args.userId, args.code, args.codeLength, args.status)
+    .first<RawCreateSubmissionRow | null>()
+    .then((raw: RawCreateSubmissionRow | null) => raw ? {
+      id: raw.id,
+      problemId: raw.problem_id,
+      userId: raw.user_id,
+      code: raw.code,
+      codeLength: raw.code_length,
+      status: raw.status,
+      createdAt: raw.created_at,
+    } : null);
 }
 
 const findSubmissionQuery = `-- name: findSubmission :one
-select id, problemid, userid, code, codelength, status, createdat from Submission where id = ?`;
+select id, problem_id, user_id, code, code_length, status, created_at from submission where id = ?`;
 
 export type findSubmissionParams = {
   id: string;
@@ -96,12 +152,22 @@ export type findSubmissionParams = {
 
 export type findSubmissionRow = {
   id: string;
-  problemid: string;
-  userid: string;
+  problemId: string;
+  userId: string;
   code: string;
-  codelength: number | string;
+  codeLength: number | string;
   status: string;
-  createdat: string;
+  createdAt: string;
+};
+
+type RawfindSubmissionRow = {
+  id: string;
+  problem_id: string;
+  user_id: string;
+  code: string;
+  code_length: number | string;
+  status: string;
+  created_at: string;
 };
 
 export async function findSubmission(
@@ -111,19 +177,33 @@ export async function findSubmission(
   return await d1
     .prepare(findSubmissionQuery)
     .bind(args.id)
-    .first<findSubmissionRow | null>();
+    .first<RawfindSubmissionRow | null>()
+    .then((raw: RawfindSubmissionRow | null) => raw ? {
+      id: raw.id,
+      problemId: raw.problem_id,
+      userId: raw.user_id,
+      code: raw.code,
+      codeLength: raw.code_length,
+      status: raw.status,
+      createdAt: raw.created_at,
+    } : null);
 }
 
 const findUserQuery = `-- name: findUser :one
-select userid, screenname from User where userId = ?`;
+select user_id, screen_name from user where user_id = ?`;
 
 export type findUserParams = {
-  userid: string;
+  userId: string;
 };
 
 export type findUserRow = {
-  userid: string;
-  screenname: string;
+  userId: string;
+  screenName: string;
+};
+
+type RawfindUserRow = {
+  user_id: string;
+  screen_name: string;
 };
 
 export async function findUser(
@@ -132,12 +212,16 @@ export async function findUser(
 ): Promise<findUserRow | null> {
   return await d1
     .prepare(findUserQuery)
-    .bind(args.userid)
-    .first<findUserRow | null>();
+    .bind(args.userId)
+    .first<RawfindUserRow | null>()
+    .then((raw: RawfindUserRow | null) => raw ? {
+      userId: raw.user_id,
+      screenName: raw.screen_name,
+    } : null);
 }
 
 const findProblemQuery = `-- name: findProblem :one
-select id, title, content, difficulty, tests, playgroundurl from Problem where id = ?`;
+select id, title, content, difficulty, tests, playground_url from problem where id = ?`;
 
 export type findProblemParams = {
   id: string;
@@ -149,7 +233,16 @@ export type findProblemRow = {
   content: string;
   difficulty: string;
   tests: string;
-  playgroundurl: string;
+  playgroundUrl: string;
+};
+
+type RawfindProblemRow = {
+  id: string;
+  title: string;
+  content: string;
+  difficulty: string;
+  tests: string;
+  playground_url: string;
 };
 
 export async function findProblem(
@@ -159,25 +252,33 @@ export async function findProblem(
   return await d1
     .prepare(findProblemQuery)
     .bind(args.id)
-    .first<findProblemRow | null>();
+    .first<RawfindProblemRow | null>()
+    .then((raw: RawfindProblemRow | null) => raw ? {
+      id: raw.id,
+      title: raw.title,
+      content: raw.content,
+      difficulty: raw.difficulty,
+      tests: raw.tests,
+      playgroundUrl: raw.playground_url,
+    } : null);
 }
 
 const findMySubmissionsToProblemQuery = `-- name: findMySubmissionsToProblem :many
 select
   submission.id,
   submission.code,
-  submission.codeLength as codeLength,
+  submission.code_length as codeLength,
   submission.status,
-  submission.createdAt as createdAt,
-  user.userId as userUserId,
-  user.screenName as userScreenName
+  submission.created_at as createdAt,
+  user.user_id as userUserId,
+  user.screen_name as userScreenName
 from
-  Submission submission
-  inner join User user on submission.userId = user.userId
+  submission submission
+  inner join user user on submission.user_id = user.user_id
 where
-  submission.problemId = ?1 and
-  submission.userId = ?2
-order by submission.createdAt desc`;
+  submission.problem_id = ?1 and
+  submission.user_id = ?2
+order by submission.created_at desc`;
 
 export type findMySubmissionsToProblemParams = {
   problemId: string;
@@ -205,7 +306,7 @@ export async function findMySubmissionsToProblem(
 }
 
 const countSubmissionsToProblemQuery = `-- name: countSubmissionsToProblem :one
-select count(*) as submissionCount from Submission where problemId = ?1`;
+select count(*) as submissionCount from submission where problem_id = ?1`;
 
 export type countSubmissionsToProblemParams = {
   problemId: string;
@@ -229,17 +330,17 @@ const findSubmissionsToProblemQuery = `-- name: findSubmissionsToProblem :many
 select
   submission.id,
   submission.code,
-  submission.codeLength as codeLength,
+  submission.code_length as codeLength,
   submission.status,
-  submission.createdAt as createdAt,
-  user.userId as userUserId,
-  user.screenName as userScreenName
+  submission.created_at as createdAt,
+  user.user_id as userUserId,
+  user.screen_name as userScreenName
 from
-  Submission submission
-  inner join User user on submission.userId = user.userId
+  submission submission
+  inner join user user on submission.userId = user.userId
 where
-  Submission.problemId = ?
-order by submission.createdAt desc
+  submission.problem_id = ?
+order by submission.created_at desc
 limit ?
 offset ?`;
 

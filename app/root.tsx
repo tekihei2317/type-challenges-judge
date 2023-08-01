@@ -14,7 +14,7 @@ export default function Root() {
     <html lang="en">
       <head>
         <meta charSet="UTF-8" />
-        <link rel="icon" type="image/png" href="/src/favicon.png" />
+        <link rel="icon" type="image/png" href="/app/favicon.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>type-challenges-judge</title>
         <meta property="og:site" content="website" />

@@ -1,13 +1,9 @@
-import { Problem, ProblemDifficulty } from './core/type-challenges-judge'
+import { Problem } from './core/type-challenges-judge'
 import { getAllProblems } from './query/querier'
+import { parseProblem } from './utils/database'
 
 export async function fetchProblems(db: D1Database): Promise<Problem[]> {
   const { results } = await getAllProblems(db)
 
-  return results.map((problem) => ({
-    ...problem,
-    difficulty: problem.difficulty as ProblemDifficulty,
-    // TODO:
-    playground_url: problem.playgroundurl,
-  }))
+  return results.map((problem) => parseProblem(problem))
 }

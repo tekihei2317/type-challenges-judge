@@ -20,35 +20,35 @@ export type Problem = {
   content: string;
   difficulty: string;
   tests: string;
-  playgroundurl: string;
+  playgroundUrl: string;
 };
 
 export type User = {
-  userid: string;
-  screenname: string;
+  userId: string;
+  screenName: string;
 };
 
 export type Submission = {
   id: string;
-  problemid: string;
-  userid: string;
+  problemId: string;
+  userId: string;
   code: string;
-  codelength: number | string;
+  codeLength: number | string;
   status: string;
-  createdat: string;
+  createdAt: string;
 };
 
 export type Judgement = {
-  submissionid: string;
+  submissionId: string;
   status: string;
   diagnostics: string;
-  createdat: string | null;
+  createdAt: string | null;
 };
 
 export type ChallengeResult = {
   id: number;
-  problemid: string;
-  userid: string;
+  problemId: string;
+  userId: string;
   status: string;
 };
 

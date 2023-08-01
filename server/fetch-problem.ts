@@ -1,5 +1,6 @@
 import { Problem, ProblemDifficulty } from './core/type-challenges-judge'
 import { getProblem } from './query/querier'
+import { parseProblem } from './utils/database'
 
 export async function fetchProblem(
   db: D1Database,
@@ -9,10 +10,5 @@ export async function fetchProblem(
   // TODO: 画面側でnullのハンドリングする
   if (problem === null) throw new Error('TODO:')
 
-  return {
-    ...problem,
-    difficulty: problem.difficulty as ProblemDifficulty,
-    // TODO: カラムがキャメルケースだと、sql-gen-d1-tsの生成する型が小文字のみになるが、実際にはキャメルケースで返ってくる
-    playground_url: (problem as any).playgroundUrl,
-  }
+  return parseProblem(problem)
 }

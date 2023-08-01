@@ -8,13 +8,13 @@ import { createSubmission as createSubmissionQuery } from './query/querier'
 export async function createSubmission(
   db: D1Database,
   submission: { userId: string; problemId: string; code: string }
-) {
+): Promise<{ id: string; problemId: string }> {
   const createdSubmission = await createSubmissionQuery(db, {
     id: generateAutoId(),
-    problemid: submission.problemId,
-    userid: submission.userId,
+    problemId: submission.problemId,
+    userId: submission.userId,
     code: submission.code,
-    codelength: submission.code.length,
+    codeLength: submission.code.length,
     status: 'Judging',
   })
   assertNonNullable(createdSubmission)
