@@ -3,6 +3,17 @@
 //   sqlc v1.19.1
 //   sqlc-gen-ts-d1 v0.0.0-a@254c24db5bcb2e1e16559e7f8498d7fa673ada31
 
+export type D1Migrations = {
+  id: number;
+  name: string | null;
+  appliedAt: number | string;
+};
+
+export type SqliteSequence = {
+  name: number | string | null;
+  seq: number | string | null;
+};
+
 export type Problem = {
   id: string;
   title: string;

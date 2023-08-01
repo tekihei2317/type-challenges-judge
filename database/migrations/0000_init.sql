@@ -1,4 +1,4 @@
--- Migration number: 0000 	 2023-07-30T10:35:20.118Z
+-- Migration number: 0000 	 2023-08-01T06:45:56.166Z
 
 -- 問題
 CREATE TABLE Problem (
@@ -24,7 +24,7 @@ CREATE TABLE Submission (
   code TEXT NOT NULL,
   codeLength INT NOT NULL,
   status TEXT NOT NULL CHECK (status in ('Judging', 'Accepted', 'Wrong Answer')),
-  createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
+  createdAt TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
   FOREIGN KEY (problemId) REFERENCES Problem (id) ON DELETE RESTRICT ON UPDATE CASCADE,
   FOREIGN KEY (userId) REFERENCES User (userId) ON DELETE RESTRICT ON UPDATE CASCADE
