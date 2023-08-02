@@ -1,6 +1,6 @@
 import { Alert, AlertIcon, Button, Stack, Textarea } from '@chakra-ui/react'
 import { createSubmission } from '../../server/create-submission'
-import { useAuth } from '../hooks/useAuth'
+import { useAuth } from '../hooks/use-auth'
 import { useOutletContext, Form } from '@remix-run/react'
 import { ProblemLayoutContext } from './problems.$problemId'
 import { ActionArgs, redirect } from '@remix-run/cloudflare'

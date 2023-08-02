@@ -1,6 +1,8 @@
-import { Problem, ProblemResultStatus } from '../model'
+import { ProblemResultStatus } from '../model'
 import { Link } from '@remix-run/react'
 import { Box } from '@chakra-ui/react'
+
+type Problem = { id: string; title: string }
 
 type ProblemButtonProps = {
   problem: Problem

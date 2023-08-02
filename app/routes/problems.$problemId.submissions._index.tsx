@@ -25,7 +25,7 @@ import { ProblemLayoutContext } from './problems.$problemId'
 import { SubmissionStatusBadge } from '../components/SubmissionStatusBadge'
 import { generatePages, PageType } from '../utils/pagination'
 import { Pagination } from '../components/Pagination'
-import { useAuth } from '../hooks/useAuth'
+import { useAuth } from '../hooks/use-auth'
 import { json, LoaderArgs } from '@remix-run/cloudflare'
 import invariant from 'tiny-invariant'
 

@@ -9,8 +9,8 @@ import {
   Button,
   MenuItem,
 } from '@chakra-ui/react'
-import { useAuth } from '../hooks/useAuth'
-import { User } from '../model'
+import { useAuth } from './hooks/use-auth'
+import { User } from './model'
 import { Link, useLocation, useRevalidator } from '@remix-run/react'
 import { useMemo } from 'react'
 

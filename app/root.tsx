@@ -1,7 +1,8 @@
 import { json, LoaderArgs } from '@remix-run/cloudflare'
 import { LiveReload, Outlet, Scripts, useLoaderData } from '@remix-run/react'
-import { AppProvider } from './components/AppProvider'
-import { DefaultLayout } from './components/DefaultLayout'
+import { ChakraProvider } from '@chakra-ui/react'
+import { DefaultLayout } from './DefaultLayout'
+import { AuthProvider } from './lib/authentication'
 
 export function loader({ context }: LoaderArgs) {
   return json({ user: context.user })
@@ -34,11 +35,13 @@ export default function Root() {
       </head>
       <body>
         <div id="root">
-          <AppProvider user={user}>
-            <DefaultLayout>
-              <Outlet />
-            </DefaultLayout>
-          </AppProvider>
+          <ChakraProvider>
+            <AuthProvider user={user}>
+              <DefaultLayout>
+                <Outlet />
+              </DefaultLayout>
+            </AuthProvider>
+          </ChakraProvider>
           <Scripts />
           <LiveReload />
         </div>
