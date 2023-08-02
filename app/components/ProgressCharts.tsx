@@ -1,6 +1,6 @@
 import { Box, SimpleGrid, Stack, Text } from '@chakra-ui/react'
 import { Pie } from 'react-chartjs-2'
-import { Progress } from '../utils/progress'
+import { mergeProgress, Progress, ProgressMap } from '../utils/progress'
 
 function progressToPieChartData(progress: Progress) {
   return {
@@ -26,15 +26,16 @@ function progressToPieChartData(progress: Progress) {
 const chartOptions = { plugins: { legend: { display: false } } }
 
 export const ProgressCharts = ({
-  progressList,
+  progressMap,
 }: {
-  progressList: Progress[]
+  progressMap: ProgressMap
 }) => {
+  const warmAndEasy = mergeProgress(progressMap.warm, progressMap.easy)
   return (
     <SimpleGrid minChildWidth={'160px'} spacing={12} mt="8">
       <Box>
         <Pie
-          data={progressToPieChartData(progressList[0])}
+          data={progressToPieChartData(warmAndEasy)}
           options={chartOptions}
         />
         <Stack mt="4">
@@ -42,13 +43,13 @@ export const ProgressCharts = ({
             Warmup & Easy
           </Text>
           <Text align="center">
-            {progressList[0].acceptedCount} / {progressList[0].totalCount}
+            {warmAndEasy.acceptedCount} / {warmAndEasy.totalCount}
           </Text>
         </Stack>
       </Box>
       <Box>
         <Pie
-          data={progressToPieChartData(progressList[1])}
+          data={progressToPieChartData(progressMap.medium)}
           options={chartOptions}
         />
         <Stack mt="4">
@@ -56,13 +57,13 @@ export const ProgressCharts = ({
             Medium
           </Text>
           <Text align="center">
-            {progressList[1].acceptedCount} / {progressList[1].totalCount}
+            {progressMap.medium.acceptedCount} / {progressMap.medium.totalCount}
           </Text>
         </Stack>
       </Box>
       <Box>
         <Pie
-          data={progressToPieChartData(progressList[2])}
+          data={progressToPieChartData(progressMap.hard)}
           options={chartOptions}
         />
         <Stack mt="4">
@@ -70,13 +71,13 @@ export const ProgressCharts = ({
             Hard
           </Text>
           <Text align="center">
-            {progressList[2].acceptedCount} / {progressList[2].totalCount}
+            {progressMap.hard.acceptedCount} / {progressMap.hard.totalCount}
           </Text>
         </Stack>
       </Box>
       <Box>
         <Pie
-          data={progressToPieChartData(progressList[3])}
+          data={progressToPieChartData(progressMap.extreme)}
           options={chartOptions}
         />
         <Stack mt="4">
@@ -84,7 +85,8 @@ export const ProgressCharts = ({
             Extreme
           </Text>
           <Text align="center">
-            {progressList[3].acceptedCount} / {progressList[3].totalCount}
+            {progressMap.extreme.acceptedCount} /{' '}
+            {progressMap.extreme.totalCount}
           </Text>
         </Stack>
       </Box>

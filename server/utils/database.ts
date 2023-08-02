@@ -1,4 +1,5 @@
 import {
+  JudgeStatus,
   ProblemDifficulty,
   SubmissionStatus,
 } from '../core/type-challenges-judge'
@@ -21,5 +22,16 @@ export function parseSubmission<T extends HasSubmissionStatus>(
   return {
     ...submission,
     status: submission.status as SubmissionStatus,
+  }
+}
+
+type HasJudgeStatus = { status: string }
+
+export function parseChallengeResult<T extends HasJudgeStatus>(
+  challengeResult: T
+): T & { status: JudgeStatus } {
+  return {
+    ...challengeResult,
+    status: challengeResult.status as JudgeStatus,
   }
 }

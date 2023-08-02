@@ -370,3 +370,124 @@ export async function findSubmissionsToProblem(
     .all<findSubmissionsToProblemRow>();
 }
 
+const findUsersChallengeResultsQuery = `-- name: findUsersChallengeResults :many
+select id, problem_id, user_id, status from challenge_result where user_id = ?`;
+
+export type findUsersChallengeResultsParams = {
+  userId: string;
+};
+
+export type findUsersChallengeResultsRow = {
+  id: number;
+  problemId: string;
+  userId: string;
+  status: string;
+};
+
+type RawfindUsersChallengeResultsRow = {
+  id: number;
+  problem_id: string;
+  user_id: string;
+  status: string;
+};
+
+export async function findUsersChallengeResults(
+  d1: D1Database,
+  args: findUsersChallengeResultsParams
+): Promise<D1Result<findUsersChallengeResultsRow>> {
+  return await d1
+    .prepare(findUsersChallengeResultsQuery)
+    .bind(args.userId)
+    .all<RawfindUsersChallengeResultsRow>()
+    .then((r: D1Result<RawfindUsersChallengeResultsRow>) => { return {
+      ...r,
+      results: r.results.map((raw: RawfindUsersChallengeResultsRow) => { return {
+        id: raw.id,
+        problemId: raw.problem_id,
+        userId: raw.user_id,
+        status: raw.status,
+      }}),
+    }});
+}
+
+const findProblemCountsQuery = `-- name: findProblemCounts :many
+select
+  problem.difficulty,
+  count(problem.id) as problem_count
+from
+  problem
+group by
+  problem.difficulty`;
+
+export type findProblemCountsRow = {
+  difficulty: string;
+  problemCount: number;
+};
+
+type RawfindProblemCountsRow = {
+  difficulty: string;
+  problem_count: number;
+};
+
+export async function findProblemCounts(
+  d1: D1Database
+): Promise<D1Result<findProblemCountsRow>> {
+  return await d1
+    .prepare(findProblemCountsQuery)
+    .all<RawfindProblemCountsRow>()
+    .then((r: D1Result<RawfindProblemCountsRow>) => { return {
+      ...r,
+      results: r.results.map((raw: RawfindProblemCountsRow) => { return {
+        difficulty: raw.difficulty,
+        problemCount: raw.problem_count,
+      }}),
+    }});
+}
+
+const calculateUserProgressQuery = `-- name: calculateUserProgress :many
+select
+  problem.difficulty,
+  coalesce(sum(case when challenge_result.status = 'Accepted' then 1 else 0 end), 0) as accepted_count,
+  sum(case when challenge_result.status = 'Wrong Answer' then 1 else 0 end) as wrong_answer_count
+from
+  challenge_result
+  inner join problem on challenge_result.problem_id = problem.id
+where
+  challenge_result.user_id = ?
+group by
+  problem.difficulty`;
+
+export type calculateUserProgressParams = {
+  userId: string;
+};
+
+export type calculateUserProgressRow = {
+  difficulty: string;
+  acceptedCount: number | string | null;
+  wrongAnswerCount: number | string | null;
+};
+
+type RawcalculateUserProgressRow = {
+  difficulty: string;
+  accepted_count: number | string | null;
+  wrong_answer_count: number | string | null;
+};
+
+export async function calculateUserProgress(
+  d1: D1Database,
+  args: calculateUserProgressParams
+): Promise<D1Result<calculateUserProgressRow>> {
+  return await d1
+    .prepare(calculateUserProgressQuery)
+    .bind(args.userId)
+    .all<RawcalculateUserProgressRow>()
+    .then((r: D1Result<RawcalculateUserProgressRow>) => { return {
+      ...r,
+      results: r.results.map((raw: RawcalculateUserProgressRow) => { return {
+        difficulty: raw.difficulty,
+        acceptedCount: raw.accepted_count,
+        wrongAnswerCount: raw.wrong_answer_count,
+      }}),
+    }});
+}
+

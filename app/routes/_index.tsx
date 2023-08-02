@@ -1,14 +1,8 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { Container } from '@chakra-ui/react'
-import {
-  Problem,
-  ProblemDifficulty,
-  ProblemResultDocument,
-  ProblemResultStatus,
-} from '../model'
+import { Problem, ProblemDifficulty, ProblemResultStatus } from '../model'
 import { fetchProblems } from '../../server/fetch-problems'
-import { fetchProblemResults } from '../use-cases/fetch-problem-results'
-import { useAuth } from '../hooks/useAuth'
+import { fetchChallengeResults } from '../../server/fetch-challenge-results'
 import { ProblemList } from '../components/ProblemsList'
 import { json, LoaderArgs } from '@remix-run/cloudflare'
 import { useLoaderData } from '@remix-run/react'
@@ -22,38 +16,26 @@ type ProblemStatusMap = {
 }
 
 export async function loader({ context }: LoaderArgs) {
-  const problems = await fetchProblems(context.env.DB)
+  const [problems, challengeResults] = await Promise.all([
+    fetchProblems(context.env.DB),
+    fetchChallengeResults(context.env.DB, context.user?.userId),
+  ])
 
-  return json({ problems })
+  return json({ problems, challengeResults })
 }
 
 export default function IndexPage() {
-  const { user } = useAuth()
-  const { problems } = useLoaderData<typeof loader>()
-  const [problemResults, setProblemResults] = useState<ProblemResultDocument[]>(
-    []
-  )
+  const { problems, challengeResults } = useLoaderData<typeof loader>()
   const problemStatusMap = useMemo<ProblemStatusMap>(
     () =>
-      problemResults.reduce((statusMap, result) => {
-        if (result.problem_id !== undefined) {
-          statusMap[result.problem_id] = result.status
+      challengeResults.reduce((statusMap, result) => {
+        if (result.problemId !== undefined) {
+          statusMap[result.problemId] = result.status
         }
         return statusMap
       }, {} as ProblemStatusMap),
-    [problemResults]
+    [challengeResults]
   )
-
-  useEffect(() => {
-    const loadData = () => {
-      if (user !== undefined) {
-        // TODO:
-        // fetchProblemResults(user.userId).then((data) => setProblemResults(data))
-      }
-    }
-
-    loadData()
-  }, [user])
 
   const warmupProblems = useMemo(
     () => problems.filter(difficultyFilter('warm')),
