@@ -9,9 +9,9 @@ import {
   Button,
   MenuItem,
 } from '@chakra-ui/react'
-import { useAuth } from '../hooks/useAuth'
-import { User } from '../model'
-import { Link, useLocation } from '@remix-run/react'
+import { useAuth } from './hooks/use-auth'
+import { User } from './model'
+import { Link, useLocation, useRevalidator } from '@remix-run/react'
 import { useMemo } from 'react'
 
 type LoginMenuProps = {
@@ -36,7 +36,6 @@ const ProfileMenu = ({ user, handleLogout }: ProfileMenuProps) => {
     <Menu placement={'bottom-end'}>
       <MenuButton as={Button}>{user?.screenName}</MenuButton>
       <MenuList>
-        <MenuItem>プロフィール</MenuItem>
         <MenuItem onClick={handleLogout}>ログアウト</MenuItem>
       </MenuList>
     </Menu>
@@ -78,6 +77,7 @@ type DefaultLayoutProps = {
 
 export const DefaultLayout = ({ children }: DefaultLayoutProps) => {
   const { user, isLoggedIn, handleLogin, handleLogout } = useAuth()
+  const revalidator = useRevalidator()
 
   return (
     <Box>
@@ -91,9 +91,22 @@ export const DefaultLayout = ({ children }: DefaultLayoutProps) => {
             </Link>
 
             {isLoggedIn ? (
-              <ProfileMenu user={user} handleLogout={handleLogout} />
+              <ProfileMenu
+                user={user}
+                handleLogout={async () => {
+                  await handleLogout()
+                  // セッションのデータを再取得する
+                  revalidator.revalidate()
+                }}
+              />
             ) : (
-              <LoginMenu handleLogin={handleLogin} />
+              <LoginMenu
+                handleLogin={async () => {
+                  await handleLogin()
+                  // セッションのデータを再取得する
+                  revalidator.revalidate()
+                }}
+              />
             )}
           </Flex>
           <Flex gap={4} mt={4}>

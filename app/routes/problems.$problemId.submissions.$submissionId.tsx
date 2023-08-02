@@ -13,42 +13,32 @@ import {
   Container,
   Text,
 } from '@chakra-ui/react'
-import { useEffect, useState } from 'react'
 import {
   Link as ReactLink,
+  useLoaderData,
   useOutletContext,
-  useParams,
 } from '@remix-run/react'
 import { CodeBlock } from '../components/CodeBlock'
 import { ProblemLayoutContext } from './problems.$problemId'
 import { SubmissionStatusBadge } from '../components/SubmissionStatusBadge'
-import { Submission } from '../model'
-import { fetchSubmission } from '../use-cases/fetch-submission'
-import { findSubmissionOwnerId } from '../use-cases/find-submission-owner-id'
+import { fetchSubmission } from '../../server/fetch-submission'
 import { changeToCodeMarkdown } from '../utils/code-block'
+import { json, LoaderArgs } from '@remix-run/cloudflare'
+import invariant from 'tiny-invariant'
+
+export async function loader({ context, params }: LoaderArgs) {
+  invariant(
+    typeof params.submissionId == 'string',
+    'params.submissionId must be a string'
+  )
+  const submission = await fetchSubmission(context.env.DB, params.submissionId)
+
+  return json({ submission })
+}
 
 export default function SubmissionPage() {
-  const [submission, setSubmission] = useState<Submission>()
-  const { submissionId } = useParams()
   const { problem } = useOutletContext<ProblemLayoutContext>()
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const ownerId = await findSubmissionOwnerId(submissionId as string)
-      if (ownerId === undefined) return
-
-      const userSubmission = await fetchSubmission(
-        ownerId,
-        submissionId as string
-      )
-
-      if (userSubmission !== undefined) {
-        setSubmission(userSubmission)
-      }
-    }
-
-    fetchData()
-  }, [submissionId, problem])
+  const { submission } = useLoaderData<typeof loader>()
 
   const tableBorderColor = 'gray.200'
 
@@ -79,7 +69,7 @@ export default function SubmissionPage() {
                       提出日時
                     </Th>
                     <Td textAlign={'center'} borderColor={tableBorderColor}>
-                      {submission.createdAt.toDate().toLocaleString()}
+                      {submission.createdAt}
                     </Td>
                   </Tr>
                   <Tr>

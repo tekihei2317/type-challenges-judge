@@ -11,72 +11,118 @@ import {
   Button,
   Box,
 } from '@chakra-ui/react'
-import { useEffect, useMemo, useState } from 'react'
-import { Link as ReactLink, useOutletContext } from '@remix-run/react'
-import { ProblemSubmissionDocument } from '../model'
-import { fetchProblemSubmissions } from '../use-cases/fetch-problem-submissions'
+import { useMemo } from 'react'
+import {
+  Link as ReactLink,
+  useLoaderData,
+  useLocation,
+  useNavigate,
+  useOutletContext,
+} from '@remix-run/react'
+import { SubmissionStatus } from '../model'
+import { fetchProblemSubmissions } from '../../server/fetch-problem-submissions'
 import { ProblemLayoutContext } from './problems.$problemId'
 import { SubmissionStatusBadge } from '../components/SubmissionStatusBadge'
 import { generatePages, PageType } from '../utils/pagination'
-import { countProblemSubmissions } from '../use-cases/count-problem-submissions'
 import { Pagination } from '../components/Pagination'
-import { useAuth } from '../hooks/useAuth'
+import { useAuth } from '../hooks/use-auth'
+import { json, LoaderArgs } from '@remix-run/cloudflare'
+import invariant from 'tiny-invariant'
+
+export async function loader({ context, params, request }: LoaderArgs) {
+  const query = new URL(request.url).searchParams
+  invariant(
+    typeof params.problemId == 'string',
+    'params.problemId must be a string'
+  )
+  const scope = query.get('scope') === 'all' ? 'all' : 'me'
+  const page = query.get('page') !== null ? Number(query.get('page')) : 1
+  const pageLimit = 20
+  const userId = scope === 'me' ? context.user?.userId : undefined
+
+  const { count, submissions } = await fetchProblemSubmissions(
+    context.env.DB,
+    params.problemId,
+    page,
+    pageLimit,
+    userId
+  )
+  const totalPage = Math.ceil(count / pageLimit)
+
+  return json({ submissions, scope, totalPage, currentPage: page })
+}
+
+function useQuery() {
+  const { search } = useLocation()
+
+  return useMemo(() => new URLSearchParams(search), [search])
+}
 
 export default function SubmissionsPage() {
-  const [submissions, setSubmissions] = useState<ProblemSubmissionDocument[]>(
-    []
-  )
-  const [currentPage, setCurrentPage] = useState<number>(1)
-  const [totalPage, setTotalPage] = useState<number>(1)
-
-  // 誰の提出を表示するか
-  const [userType, setUserType] = useState<'me' | 'all'>('me')
   const { user } = useAuth()
+  const { submissions, totalPage } = useLoaderData<typeof loader>()
+  const { problem } = useOutletContext<ProblemLayoutContext>()
+  const location = useLocation()
+  const query = useQuery()
+  const queryParams = {
+    scope: query.get('scope'),
+    page: query.get('page'),
+  }
+  const currentPage = queryParams.page !== null ? Number(queryParams.page) : 1
 
   const pages = useMemo(
     () => generatePages(currentPage, totalPage),
     [currentPage, totalPage]
   )
+
+  const currentPath = location.pathname
+  const navigate = useNavigate()
+
   const handlePageClick = (page: PageType) => {
     if (page === 'LEFT') {
-      setCurrentPage(currentPage - 2)
+      navigate(
+        `${currentPath}?${new URLSearchParams({
+          scope: 'all',
+          page: (currentPage - 2).toString(),
+        }).toString()}`
+      )
     } else if (page === 'RIGHT') {
-      setCurrentPage(currentPage + 2)
+      navigate(
+        `${currentPath}?${new URLSearchParams({
+          scope: 'all',
+          page: (currentPage + 2).toString(),
+        }).toString()}`
+      )
     } else {
-      setCurrentPage(page)
+      navigate(
+        `${currentPath}?${new URLSearchParams({
+          scope: 'all',
+          page: page.toString(),
+        }).toString()}`
+      )
     }
   }
-
-  const { problem } = useOutletContext<ProblemLayoutContext>()
-
-  useEffect(() => {
-    const userNameFilter =
-      userType === 'me' && user ? user.screenName : undefined
-    const fetchData = async () => {
-      const [submissionsCount, documents] = await Promise.all([
-        countProblemSubmissions(problem.id),
-        fetchProblemSubmissions(problem.id, currentPage, 20, userNameFilter),
-      ])
-      setSubmissions(documents)
-      setTotalPage(Math.ceil(submissionsCount / 20))
-    }
-
-    fetchData()
-  }, [problem.id, currentPage, totalPage, userType, user])
-
   return (
     <Stack pb={24}>
       {user && (
         <Wrap p={1}>
           <Button
-            colorScheme={userType === 'me' ? 'blue' : undefined}
-            onClick={() => setUserType('me')}
+            colorScheme={queryParams.scope !== 'all' ? 'blue' : undefined}
+            onClick={() =>
+              navigate(`${currentPath}?${new URLSearchParams({}).toString()}`)
+            }
           >
             自分の提出
           </Button>
           <Button
-            colorScheme={userType === 'all' ? 'blue' : undefined}
-            onClick={() => setUserType('all')}
+            colorScheme={queryParams.scope === 'all' ? 'blue' : undefined}
+            onClick={() => {
+              navigate(
+                `${currentPath}?${new URLSearchParams({
+                  scope: 'all',
+                }).toString()}`
+              )
+            }}
           >
             全ての提出
           </Button>
@@ -95,7 +141,7 @@ export default function SubmissionsPage() {
             {submissions.map((submission) => {
               return (
                 <Tr key={submission.id}>
-                  <Td>{submission.createdAt.toDate().toLocaleString()}</Td>
+                  <Td>{submission.createdAt}</Td>
                   <Td>
                     <Link
                       as={ReactLink}
@@ -108,7 +154,7 @@ export default function SubmissionsPage() {
                   <Td>{submission.user.screenName}</Td>
                   <Td>
                     <SubmissionStatusBadge>
-                      {submission.status}
+                      {submission.status as SubmissionStatus}
                     </SubmissionStatusBadge>
                   </Td>
                   <Td>
@@ -126,7 +172,7 @@ export default function SubmissionsPage() {
           </Thead>
         </Table>
       </TableContainer>
-      {submissions.length > 0 && userType === 'all' && (
+      {submissions.length > 0 && queryParams.scope === 'all' && (
         <Box pt={6}>
           <Pagination
             pages={pages}

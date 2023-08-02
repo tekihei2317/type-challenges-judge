@@ -1,0 +1,16 @@
+node_compat = true
+
+kv_namespaces = [
+  { binding = "PUBLIC_JWK_CACHE_KV", id = "3ba2346afa80424daa438820f4506828", preview_id = "0eb5da7dd9b8483eb3b216cca2a174c8" }
+]
+
+[vars]
+FIREBASE_AUTH_EMULATOR_HOST = "localhost:9099"
+FIREBASE_PROJECT_ID = "type-challenges-judge"
+PUBLIC_JWK_CACHE_KEY = "public-jwk-cache-key"
+
+[[d1_databases]]
+binding = "DB" # i.e. available in your Worker on env.DB
+database_name = "type-challenges-judge"
+database_id = "2adb5da8-cd23-45a7-b2fb-2392319e9520"
+migrations_dir = "database/migrations"

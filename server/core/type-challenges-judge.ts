@@ -28,4 +28,17 @@ export type Submission = {
   createdAt: string
 }
 
-export type ProblemResultStatus = 'Accepted' | 'Wrong Answer'
+export type JudgeStatus = 'Accepted' | 'Wrong Answer'
+
+export type ChallengeResult = {
+  userId: string
+  problemId: string
+  status: JudgeStatus
+}
+
+export type Progress = {
+  difficulty: string
+  acceptedCount: number
+  wrongAnswerCount: number
+  totalCount: number
+}

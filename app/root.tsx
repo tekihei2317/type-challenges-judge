@@ -1,13 +1,21 @@
-import { Outlet, Scripts } from '@remix-run/react'
-import { AppProvider } from './components/AppProvider'
-import { DefaultLayout } from './components/DefaultLayout'
+import { json, LoaderArgs } from '@remix-run/cloudflare'
+import { LiveReload, Outlet, Scripts, useLoaderData } from '@remix-run/react'
+import { ChakraProvider } from '@chakra-ui/react'
+import { DefaultLayout } from './DefaultLayout'
+import { AuthProvider } from './lib/authentication'
+
+export function loader({ context }: LoaderArgs) {
+  return json({ user: context.user })
+}
 
 export default function Root() {
+  const { user } = useLoaderData<typeof loader>()
+
   return (
     <html lang="en">
       <head>
         <meta charSet="UTF-8" />
-        <link rel="icon" type="image/png" href="/src/favicon.png" />
+        <link rel="icon" type="image/png" href="/favicon.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>type-challenges-judge</title>
         <meta property="og:site" content="website" />
@@ -27,12 +35,15 @@ export default function Root() {
       </head>
       <body>
         <div id="root">
-          <AppProvider>
-            <DefaultLayout>
-              <Outlet />
-            </DefaultLayout>
-          </AppProvider>
+          <ChakraProvider>
+            <AuthProvider user={user}>
+              <DefaultLayout>
+                <Outlet />
+              </DefaultLayout>
+            </AuthProvider>
+          </ChakraProvider>
           <Scripts />
+          <LiveReload />
         </div>
       </body>
     </html>

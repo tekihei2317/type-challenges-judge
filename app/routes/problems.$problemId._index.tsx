@@ -9,29 +9,25 @@ export default function ProblemPage() {
 
   return (
     <>
-      {problem === undefined ? (
-        <></>
-      ) : (
-        <Box>
-          <Wrap p={1} pl={0.5} mb={6}>
-            <Link
-              href={problem.playground_url}
-              isExternal
-              style={{ textDecoration: 'none' }}
-            >
-              <Button colorScheme={'blue'}>挑戦する</Button>
-            </Link>
-            <Link
-              href={toGitHubUrl(problem)}
-              isExternal
-              style={{ textDecoration: 'none' }}
-            >
-              <Button variant={'outline'}>GitHubで見る</Button>
-            </Link>
-          </Wrap>
-          <CodeBlock code={problem.content} />
-        </Box>
-      )}
+      <Box>
+        <Wrap p={1} pl={0.5} mb={6}>
+          <Link
+            href={problem.playgroundUrl}
+            isExternal
+            style={{ textDecoration: 'none' }}
+          >
+            <Button colorScheme={'blue'}>挑戦する</Button>
+          </Link>
+          <Link
+            href={toGitHubUrl(problem)}
+            isExternal
+            style={{ textDecoration: 'none' }}
+          >
+            <Button variant={'outline'}>GitHubで見る</Button>
+          </Link>
+        </Wrap>
+        <CodeBlock code={problem.content} />
+      </Box>
     </>
   )
 }
