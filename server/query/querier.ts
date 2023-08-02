@@ -267,9 +267,9 @@ const findMySubmissionsToProblemQuery = `-- name: findMySubmissionsToProblem :ma
 select
   submission.id,
   submission.code,
-  submission.code_length as codeLength,
+  submission.code_length,
   submission.status,
-  submission.created_at as createdAt,
+  submission.created_at,
   user.user_id as userUserId,
   user.screen_name as userScreenName
 from
@@ -295,6 +295,16 @@ export type findMySubmissionsToProblemRow = {
   userScreenName: string;
 };
 
+type RawfindMySubmissionsToProblemRow = {
+  id: string;
+  code: string;
+  code_length: number | string;
+  status: string;
+  created_at: string;
+  userUserId: string;
+  userScreenName: string;
+};
+
 export async function findMySubmissionsToProblem(
   d1: D1Database,
   args: findMySubmissionsToProblemParams
@@ -302,7 +312,19 @@ export async function findMySubmissionsToProblem(
   return await d1
     .prepare(findMySubmissionsToProblemQuery)
     .bind(args.problemId, args.userId)
-    .all<findMySubmissionsToProblemRow>();
+    .all<RawfindMySubmissionsToProblemRow>()
+    .then((r: D1Result<RawfindMySubmissionsToProblemRow>) => { return {
+      ...r,
+      results: r.results.map((raw: RawfindMySubmissionsToProblemRow) => { return {
+        id: raw.id,
+        code: raw.code,
+        codeLength: raw.code_length,
+        status: raw.status,
+        createdAt: raw.created_at,
+        userUserId: raw.userUserId,
+        userScreenName: raw.userScreenName,
+      }}),
+    }});
 }
 
 const countSubmissionsToProblemQuery = `-- name: countSubmissionsToProblem :one
@@ -330,14 +352,14 @@ const findSubmissionsToProblemQuery = `-- name: findSubmissionsToProblem :many
 select
   submission.id,
   submission.code,
-  submission.code_length as codeLength,
+  submission.code_length,
   submission.status,
-  submission.created_at as createdAt,
+  submission.created_at,
   user.user_id as userUserId,
   user.screen_name as userScreenName
 from
   submission submission
-  inner join user user on submission.userId = user.userId
+  inner join user on submission.user_id = user.user_id
 where
   submission.problem_id = ?
 order by submission.created_at desc
@@ -360,6 +382,16 @@ export type findSubmissionsToProblemRow = {
   userScreenName: string;
 };
 
+type RawfindSubmissionsToProblemRow = {
+  id: string;
+  code: string;
+  code_length: number | string;
+  status: string;
+  created_at: string;
+  userUserId: string;
+  userScreenName: string;
+};
+
 export async function findSubmissionsToProblem(
   d1: D1Database,
   args: findSubmissionsToProblemParams
@@ -367,7 +399,19 @@ export async function findSubmissionsToProblem(
   return await d1
     .prepare(findSubmissionsToProblemQuery)
     .bind(args.problemId, args.limit, args.offset)
-    .all<findSubmissionsToProblemRow>();
+    .all<RawfindSubmissionsToProblemRow>()
+    .then((r: D1Result<RawfindSubmissionsToProblemRow>) => { return {
+      ...r,
+      results: r.results.map((raw: RawfindSubmissionsToProblemRow) => { return {
+        id: raw.id,
+        code: raw.code,
+        codeLength: raw.code_length,
+        status: raw.status,
+        createdAt: raw.created_at,
+        userUserId: raw.userUserId,
+        userScreenName: raw.userScreenName,
+      }}),
+    }});
 }
 
 const findUsersChallengeResultsQuery = `-- name: findUsersChallengeResults :many
@@ -447,7 +491,7 @@ export async function findProblemCounts(
 const calculateUserProgressQuery = `-- name: calculateUserProgress :many
 select
   problem.difficulty,
-  coalesce(sum(case when challenge_result.status = 'Accepted' then 1 else 0 end), 0) as accepted_count,
+  sum(case when challenge_result.status = 'Accepted' then 1 else 0 end) as accepted_count,
   sum(case when challenge_result.status = 'Wrong Answer' then 1 else 0 end) as wrong_answer_count
 from
   challenge_result

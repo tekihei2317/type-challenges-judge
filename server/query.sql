@@ -24,9 +24,9 @@ select * from problem where id = ?;
 select
   submission.id,
   submission.code,
-  submission.code_length as codeLength,
+  submission.code_length,
   submission.status,
-  submission.created_at as createdAt,
+  submission.created_at,
   user.user_id as userUserId,
   user.screen_name as userScreenName
 from
@@ -44,14 +44,14 @@ select count(*) as submissionCount from submission where problem_id = @problemId
 select
   submission.id,
   submission.code,
-  submission.code_length as codeLength,
+  submission.code_length,
   submission.status,
-  submission.created_at as createdAt,
+  submission.created_at,
   user.user_id as userUserId,
   user.screen_name as userScreenName
 from
   submission submission
-  inner join user user on submission.userId = user.userId
+  inner join user on submission.user_id = user.user_id
 where
   submission.problem_id = @problemId
 order by submission.created_at desc
