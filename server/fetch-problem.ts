@@ -1,4 +1,4 @@
-import { Problem, ProblemDifficulty } from './core/type-challenges-judge'
+import { Problem } from './core/type-challenges-judge'
 import { getProblem } from './query/querier'
 import { parseProblem } from './utils/database'
 

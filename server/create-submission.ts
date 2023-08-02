@@ -1,10 +1,7 @@
-import { assertNonNullable } from '../app/utils/assertion'
-import { generateAutoId } from './utils/record-id'
+import { assertNonNullable } from './utils/assertion'
+import { generateAutoId } from './utils/database'
 import { createSubmission as createSubmissionQuery } from './query/querier'
 
-/**
- * Submit user's solution
- */
 export async function createSubmission(
   db: D1Database,
   submission: { userId: string; problemId: string; code: string }
