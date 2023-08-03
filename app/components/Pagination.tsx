@@ -15,7 +15,7 @@ export const Pagination = ({
   return (
     <>
       {pages.length > 1 && (
-        <Flex gap="1">
+        <Flex gap="2">
           {pages.map((page) => (
             <Button
               key={page}

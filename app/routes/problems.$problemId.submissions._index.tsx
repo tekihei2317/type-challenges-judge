@@ -35,9 +35,13 @@ export async function loader({ context, params, request }: LoaderArgs) {
     typeof params.problemId == 'string',
     'params.problemId must be a string'
   )
-  const scope = query.get('scope') === 'all' ? 'all' : 'me'
+  const scope = context.user
+    ? query.get('scope') === 'all'
+      ? 'all'
+      : 'me'
+    : 'all'
   const page = query.get('page') !== null ? Number(query.get('page')) : 1
-  const pageLimit = 20
+  const pageLimit = 15
   const userId = scope === 'me' ? context.user?.userId : undefined
 
   const { count, submissions } = await fetchProblemSubmissions(
@@ -60,7 +64,7 @@ function useQuery() {
 
 export default function SubmissionsPage() {
   const { user } = useAuth()
-  const { submissions, totalPage } = useLoaderData<typeof loader>()
+  const { submissions, totalPage, scope } = useLoaderData<typeof loader>()
   const { problem } = useOutletContext<ProblemLayoutContext>()
   const location = useLocation()
   const query = useQuery()
@@ -172,8 +176,8 @@ export default function SubmissionsPage() {
           </Thead>
         </Table>
       </TableContainer>
-      {submissions.length > 0 && queryParams.scope === 'all' && (
-        <Box pt={6}>
+      {submissions.length > 0 && scope === 'all' && (
+        <Box mt={4}>
           <Pagination
             pages={pages}
             currentPage={currentPage}
