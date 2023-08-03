@@ -1,13 +1,16 @@
 {
-  "name": "project",
+  "name": "type-challenges-judge",
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "workspaces": [
+    "cloud-functions"
+  ],
   "scripts": {
     "dev": "remix dev --manual -c \"npm run start\"",
     "start": "wrangler pages dev --compatibility-date=2023-06-21 ./public",
     "build": "remix build",
-    "emulators": "firebase emulators:start",
+    "emulators": "firebase emulators:start --only auth",
     "db:path": "echo '.wrangler/state/v3/d1/2adb5da8-cd23-45a7-b2fb-2392319e9520/db.sqlite'",
     "db:seed": "node database/seed-runner.js",
     "db:console": "sqlite3 $(yarn run --silent db:path)",
@@ -16,9 +19,10 @@
     "migrate": "wrangler d1 migrations apply type-challenges-judge --local",
     "migrate:reset": "rm $(yarn run --silent db:path) && yarn run migrate",
     "migrate:production": "wrangler d1 migrations apply type-challenges-judge",
-    "lint": "npm run lint:prettier && npm run lint:eslint",
-    "lint:prettier": "prettier --check .",
-    "lint:eslint": "eslint --ext .js,.ts,.tsx ."
+    "lint": "yarn run lint:prettier && yarn run lint:eslint && yarn run lint:tsc",
+    "lint:prettier": "prettier --check --ignore-path .gitignore '**/*.{js,ts,tsx}' '!server/query'",
+    "lint:eslint": "eslint --ignore-path .gitignore --ext .js,.ts,.tsx .",
+    "lint:tsc": "tsc --noEmit"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.0.0",

@@ -1,5 +1,5 @@
 {
-  "name": "scripts",
+  "name": "cloud-functions",
   "version": "1.0.0",
   "main": "lib/functions/index.js",
   "license": "MIT",

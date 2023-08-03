@@ -39,3 +39,5 @@ coverage
 /functions/metafile.js.json
 /functions/metafile.server.json
 .wrangler
+
+cloud-functions/lib
