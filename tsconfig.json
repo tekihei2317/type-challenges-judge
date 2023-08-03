@@ -16,5 +16,5 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["app", "server/utils/record-id.ts", "server"]
+  "include": ["app", "server"]
 }

@@ -8,6 +8,7 @@ export interface QuizMetaInfo {
     email: string
     github: string
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tsconfig?: Record<string, any>
   original_issues: number[]
   recommended_solutions: number[]

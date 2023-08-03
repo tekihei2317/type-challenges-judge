@@ -1,7 +1,4 @@
-import {
-  D1Database,
-  ExecutionContext,
-} from '@cloudflare/workers-types/2022-11-30'
+import { D1Database } from '@cloudflare/workers-types/2022-11-30'
 import { updateProblems } from './update-problems'
 import { Quiz } from './utils/type-challenges'
 
@@ -14,11 +11,7 @@ async function seed(db: D1Database, quizez: Quiz[]) {
 }
 
 export default {
-  async fetch(
-    request: Request,
-    env: Env,
-    ctx: ExecutionContext
-  ): Promise<Response> {
+  async fetch(request: Request, env: Env): Promise<Response> {
     const quizez: Quiz[] = await request.json()
     try {
       await seed(env.DB, quizez)

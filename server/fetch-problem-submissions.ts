@@ -12,7 +12,7 @@ type SubmissionWithUser = {
   codeLength: number
   status: string
   user: User
-  createdAt: String
+  createdAt: string
 }
 
 type FetchProblemSubmissionsReturn = {
