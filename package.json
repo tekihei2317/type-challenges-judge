@@ -22,7 +22,8 @@
     "lint": "yarn run lint:prettier && yarn run lint:eslint && yarn run lint:tsc",
     "lint:prettier": "prettier --check --ignore-path .gitignore '**/*.{js,ts,tsx}' '!server/query'",
     "lint:eslint": "eslint --ignore-path .gitignore --ext .js,.ts,.tsx .",
-    "lint:tsc": "tsc --noEmit"
+    "lint:tsc": "tsc --noEmit",
+    "copy-typescript-lib": "node scripts/copy-typescript-lib.js"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.0.0",

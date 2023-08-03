@@ -11,6 +11,30 @@ values
   (?, ?, ?, ?, ?, ?)
 returning *;
 
+-- name: CreateJudgement :one
+insert into judgement
+  (submission_id, status, diagnostics)
+values
+  (?, ?, ?)
+returning *;
+
+-- name: findChallengeResult :one
+select * from challenge_result
+where problem_id = ? and user_id = ?;
+
+-- name: createChallengeResult :one
+insert into challenge_result
+  (problem_id, user_id, status)
+values
+  (?, ?, ?)
+returning *;
+
+-- name: updateChallengeResultStatus :one
+update challenge_result
+set status = ?
+where problem_id = ? and user_id = ?
+returning *;
+
 -- name: findSubmission :one
 select * from submission where id = ?;
 
