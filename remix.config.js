@@ -16,9 +16,9 @@ export default {
       inspector: 'empty',
       path: 'empty',
       os: 'empty',
-      // serverNodeBuiltinsPolyfillを設定すると、vfileでCould not resolve ("process" | "url")になったため追加
-      process: 'empty',
-      url: 'empty',
+      // serverNodeBuiltinsPolyfillを設定すると、remix buildのvfileでCould not resolve ("process" | "url")になったため追加
+      process: true,
+      url: true,
     },
   },
   future: {

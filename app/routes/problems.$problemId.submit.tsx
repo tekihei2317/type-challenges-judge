@@ -17,11 +17,16 @@ export async function action({ request, context }: ActionArgs) {
   invariant(typeof problemId === 'string', 'problemId must be a string')
   invariant(typeof code === 'string', 'code must be a string')
 
-  const submission = await createSubmission(context.env.DB, {
-    userId,
-    problemId,
-    code,
-  })
+  const submission = await createSubmission(
+    context.env.DB,
+    context.env.JUDGE_WORKER,
+    request,
+    {
+      userId,
+      problemId,
+      code,
+    }
+  )
 
   return redirect(
     `/problems/${submission.problemId}/submissions/${submission.id}`

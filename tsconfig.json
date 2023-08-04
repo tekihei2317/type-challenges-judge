@@ -17,5 +17,5 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["app", "server"]
+  "include": ["app", "server", "judge-worker/src/judge-worker.ts"]
 }

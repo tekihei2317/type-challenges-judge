@@ -8,8 +8,8 @@ import {
   getPreEmitDiagnostics,
   flattenDiagnosticMessageText,
 } from 'typescript'
-import { es5Lib } from './lib/typescript-lib'
-import { JudgeStatus } from './core/type-challenges-judge'
+import { es5Lib } from './typescript-lib'
+
 type Diagnostic = string
 
 // https://github.com/type-challenges/type-challenges/blob/main/utils/index.d.ts
@@ -100,8 +100,4 @@ export function compileSolution(
   return diagnostics.map((diagnostic) =>
     flattenDiagnosticMessageText(diagnostic.messageText, '\n')
   )
-}
-
-export function calculateStatus(diagnostics: Diagnostic[]): JudgeStatus {
-  return diagnostics.length > 0 ? 'Wrong Answer' : 'Accepted'
 }

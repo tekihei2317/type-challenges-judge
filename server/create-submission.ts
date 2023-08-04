@@ -2,62 +2,43 @@ import invariant from 'tiny-invariant'
 import { assertNonNullable } from './utils/assertion'
 import { generateAutoId } from './utils/database'
 import {
-  createChallengeResult,
-  createJudgement,
   createSubmission as createSubmissionQuery,
-  findChallengeResult,
   findProblem,
-  updateChallengeResultStatus,
 } from './query/querier'
-import { calculateStatus, compileSolution } from './judge'
+import { JudgeQueueMessage } from '../judge-worker/src/judge-worker'
 
 export async function createSubmission(
   db: D1Database,
+  judgeWorker: Fetcher,
+  request: Request,
   submission: { userId: string; problemId: string; code: string }
 ): Promise<{ id: string; problemId: string }> {
   const problem = await findProblem(db, { id: submission.problemId })
   invariant(problem, 'invalid problem')
 
-  const diagnostics = compileSolution(submission.code, problem.tests)
-  const status = calculateStatus(diagnostics)
-
-  // 提出と判定結果、挑戦結果を登録する(TODO: トランザクション)
+  // 提出を登録する
   const createdSubmission = await createSubmissionQuery(db, {
     id: generateAutoId(),
     problemId: submission.problemId,
     userId: submission.userId,
     code: submission.code,
     codeLength: submission.code.length,
-    status,
+    status: 'Judging',
   })
   assertNonNullable(createdSubmission)
 
-  await createJudgement(db, {
-    diagnostics: JSON.stringify(diagnostics),
-    status: status,
+  // 判定処理をワーカーで行う（TODO: リトライ）
+  const message: JudgeQueueMessage = {
     submissionId: createdSubmission.id,
-  })
-
-  const challengeResult = await findChallengeResult(db, {
-    problemId: problem.id,
+    problemId: submission.problemId,
     userId: submission.userId,
-  })
-  if (challengeResult === null) {
-    // 初挑戦の場合は、挑戦結果を登録する
-    await createChallengeResult(db, {
-      problemId: problem.id,
-      userId: submission.userId,
-      status,
-    })
-  } else {
-    // そうでない場合は、前回が不正解で今回が正解だった場合は更新する
-    if (challengeResult.status === 'Wrong Answer' && status === 'Accepted')
-      await updateChallengeResultStatus(db, {
-        problemId: problem.id,
-        userId: submission.userId,
-        status,
-      })
+    code: submission.code,
+    tests: problem.tests,
   }
+  await judgeWorker.fetch(request, {
+    method: 'POST',
+    body: JSON.stringify(message),
+  })
 
   return createdSubmission
 }
