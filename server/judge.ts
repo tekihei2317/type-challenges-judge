@@ -1,4 +1,13 @@
-import * as ts from 'typescript'
+import {
+  CompilerOptions,
+  ScriptTarget,
+  ModuleKind,
+  CompilerHost,
+  createSourceFile,
+  createProgram,
+  getPreEmitDiagnostics,
+  flattenDiagnosticMessageText,
+} from 'typescript'
 import { es5Lib } from './lib/typescript-lib'
 import { JudgeStatus } from './core/type-challenges-judge'
 type Diagnostic = string
@@ -45,31 +54,27 @@ export function compileSolution(
   const libFileName = 'lib.es5.d.ts'
   const tcUtilsFileName = 'type-challenge-utils.ts'
 
-  const options: ts.CompilerOptions = {
+  const options: CompilerOptions = {
     noImplicitAny: true,
     strictNullChecks: true,
-    target: ts.ScriptTarget.ES5,
-    module: ts.ModuleKind.CommonJS,
+    target: ScriptTarget.ES5,
+    module: ModuleKind.CommonJS,
     noEmit: true,
   }
-  const compilerHost: ts.CompilerHost = {
+  const compilerHost: CompilerHost = {
     getSourceFile: (fileName: string) => {
       if (fileName === sourceFileName) {
-        return ts.createSourceFile(
+        return createSourceFile(
           fileName,
           [solution, testCase].join('\n'),
-          ts.ScriptTarget.ES5
+          ScriptTarget.ES5
         )
       }
       if (fileName === libFileName) {
-        return ts.createSourceFile(fileName, es5Lib, ts.ScriptTarget.ES5)
+        return createSourceFile(fileName, es5Lib, ScriptTarget.ES5)
       }
       if (fileName === tcUtilsFileName) {
-        return ts.createSourceFile(
-          fileName,
-          typeChallengeUtils,
-          ts.ScriptTarget.ES5
-        )
+        return createSourceFile(fileName, typeChallengeUtils, ScriptTarget.ES5)
       }
       return undefined
     },
@@ -89,11 +94,11 @@ export function compileSolution(
     },
   }
 
-  const program = ts.createProgram([sourceFileName], options, compilerHost)
-  const diagnostics = ts.getPreEmitDiagnostics(program)
+  const program = createProgram([sourceFileName], options, compilerHost)
+  const diagnostics = getPreEmitDiagnostics(program)
 
   return diagnostics.map((diagnostic) =>
-    ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n')
+    flattenDiagnosticMessageText(diagnostic.messageText, '\n')
   )
 }
 

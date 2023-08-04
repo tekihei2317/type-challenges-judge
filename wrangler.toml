@@ -1,5 +1,3 @@
-node_compat = true
-
 kv_namespaces = [
   { binding = "PUBLIC_JWK_CACHE_KV", id = "3ba2346afa80424daa438820f4506828", preview_id = "0eb5da7dd9b8483eb3b216cca2a174c8" }
 ]
