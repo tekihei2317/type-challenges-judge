@@ -143,6 +143,173 @@ export async function createSubmission(
     } : null);
 }
 
+const createJudgementQuery = `-- name: CreateJudgement :one
+insert into judgement
+  (submission_id, status, diagnostics)
+values
+  (?, ?, ?)
+returning submission_id, status, diagnostics, created_at`;
+
+export type CreateJudgementParams = {
+  submissionId: string;
+  status: string;
+  diagnostics: string;
+};
+
+export type CreateJudgementRow = {
+  submissionId: string;
+  status: string;
+  diagnostics: string;
+  createdAt: string | null;
+};
+
+type RawCreateJudgementRow = {
+  submission_id: string;
+  status: string;
+  diagnostics: string;
+  created_at: string | null;
+};
+
+export async function createJudgement(
+  d1: D1Database,
+  args: CreateJudgementParams
+): Promise<CreateJudgementRow | null> {
+  return await d1
+    .prepare(createJudgementQuery)
+    .bind(args.submissionId, args.status, args.diagnostics)
+    .first<RawCreateJudgementRow | null>()
+    .then((raw: RawCreateJudgementRow | null) => raw ? {
+      submissionId: raw.submission_id,
+      status: raw.status,
+      diagnostics: raw.diagnostics,
+      createdAt: raw.created_at,
+    } : null);
+}
+
+const findChallengeResultQuery = `-- name: findChallengeResult :one
+select id, problem_id, user_id, status from challenge_result
+where problem_id = ? and user_id = ?`;
+
+export type findChallengeResultParams = {
+  problemId: string;
+  userId: string;
+};
+
+export type findChallengeResultRow = {
+  id: number;
+  problemId: string;
+  userId: string;
+  status: string;
+};
+
+type RawfindChallengeResultRow = {
+  id: number;
+  problem_id: string;
+  user_id: string;
+  status: string;
+};
+
+export async function findChallengeResult(
+  d1: D1Database,
+  args: findChallengeResultParams
+): Promise<findChallengeResultRow | null> {
+  return await d1
+    .prepare(findChallengeResultQuery)
+    .bind(args.problemId, args.userId)
+    .first<RawfindChallengeResultRow | null>()
+    .then((raw: RawfindChallengeResultRow | null) => raw ? {
+      id: raw.id,
+      problemId: raw.problem_id,
+      userId: raw.user_id,
+      status: raw.status,
+    } : null);
+}
+
+const createChallengeResultQuery = `-- name: createChallengeResult :one
+insert into challenge_result
+  (problem_id, user_id, status)
+values
+  (?, ?, ?)
+returning id, problem_id, user_id, status`;
+
+export type createChallengeResultParams = {
+  problemId: string;
+  userId: string;
+  status: string;
+};
+
+export type createChallengeResultRow = {
+  id: number;
+  problemId: string;
+  userId: string;
+  status: string;
+};
+
+type RawcreateChallengeResultRow = {
+  id: number;
+  problem_id: string;
+  user_id: string;
+  status: string;
+};
+
+export async function createChallengeResult(
+  d1: D1Database,
+  args: createChallengeResultParams
+): Promise<createChallengeResultRow | null> {
+  return await d1
+    .prepare(createChallengeResultQuery)
+    .bind(args.problemId, args.userId, args.status)
+    .first<RawcreateChallengeResultRow | null>()
+    .then((raw: RawcreateChallengeResultRow | null) => raw ? {
+      id: raw.id,
+      problemId: raw.problem_id,
+      userId: raw.user_id,
+      status: raw.status,
+    } : null);
+}
+
+const updateChallengeResultStatusQuery = `-- name: updateChallengeResultStatus :one
+update challenge_result
+set status = ?
+where problem_id = ? and user_id = ?
+returning id, problem_id, user_id, status`;
+
+export type updateChallengeResultStatusParams = {
+  status: string;
+  problemId: string;
+  userId: string;
+};
+
+export type updateChallengeResultStatusRow = {
+  id: number;
+  problemId: string;
+  userId: string;
+  status: string;
+};
+
+type RawupdateChallengeResultStatusRow = {
+  id: number;
+  problem_id: string;
+  user_id: string;
+  status: string;
+};
+
+export async function updateChallengeResultStatus(
+  d1: D1Database,
+  args: updateChallengeResultStatusParams
+): Promise<updateChallengeResultStatusRow | null> {
+  return await d1
+    .prepare(updateChallengeResultStatusQuery)
+    .bind(args.status, args.problemId, args.userId)
+    .first<RawupdateChallengeResultStatusRow | null>()
+    .then((raw: RawupdateChallengeResultStatusRow | null) => raw ? {
+      id: raw.id,
+      problemId: raw.problem_id,
+      userId: raw.user_id,
+      status: raw.status,
+    } : null);
+}
+
 const findSubmissionQuery = `-- name: findSubmission :one
 select id, problem_id, user_id, code, code_length, status, created_at from submission where id = ?`;
 

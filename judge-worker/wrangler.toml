@@ -1,0 +1,15 @@
+name = "judge-worker"
+main = "src/worker.ts"
+compatibility_date = "2023-08-01"
+
+[[queues.producers]]
+binding = "JUDGE_QUEUE"
+queue = "type-challenges-judge"
+
+[[queues.consumers]]
+queue = "type-challenges-judge"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "type-challenges-judge"
+database_id = "2adb5da8-cd23-45a7-b2fb-2392319e9520"

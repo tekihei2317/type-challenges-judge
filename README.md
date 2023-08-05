@@ -19,12 +19,21 @@
 ```bash
 yarn install
 
-# Firebaseのエミュレーターの起動する
-yarn emulators
-
 # データベースに初期データを入れる
 yarn db:seed
 
+# Firebaseのエミュレーターの起動する
+yarn emulators
+```
+
+```bash
+# 判定用のワーカーを起動する
+ln -s ../.wrangler judge-worker/.wrangler # ローカルのデータベースを共有する
+cd judge-worker
+yarn dev
+```
+
+```bash
 # 開発サーバーを起動する
 yarn dev
 ```

@@ -10,6 +10,17 @@ export default {
   serverMinify: true,
   serverModuleFormat: 'esm',
   serverPlatform: 'neutral',
+  serverNodeBuiltinsPolyfill: {
+    modules: {
+      // typescriptを動かすための設定
+      inspector: 'empty',
+      path: 'empty',
+      os: 'empty',
+      // serverNodeBuiltinsPolyfillを設定すると、remix buildのvfileでCould not resolve ("process" | "url")になったため追加
+      process: true,
+      url: true,
+    },
+  },
   future: {
     v2_dev: true,
     v2_errorBoundary: true,
