@@ -57,22 +57,28 @@ async function judgeAndSaveResult({
     userId: message.userId,
   })
   const createOrUpdateChallengeResult =
+    // 初挑戦の場合は登録する
     challengeResult === null
       ? db
           .prepare(
             'insert into challenge_result (problem_id, user_id, status) values (?, ?, ?)'
           )
           .bind(message.problemId, message.userId, status)
-      : db
+      : // 初挑戦でない場合は、初正解の場合は更新する
+      challengeResult.status === 'Wrong Answer' && status === 'Accepted'
+      ? db
           .prepare(
             'update challenge_result set status = ? where problem_id = ? and user_id = ?'
           )
           .bind(status, message.problemId, message.userId)
+      : null
 
   await db.batch([
     createJudgement,
     updateSubmission,
-    createOrUpdateChallengeResult,
+    ...(createOrUpdateChallengeResult === null
+      ? []
+      : [createOrUpdateChallengeResult]),
   ])
 }
 
