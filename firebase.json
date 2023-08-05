@@ -1,4 +1,19 @@
 {
+  "hosting": {
+    "public": "dist",
+    "redirects": [
+      {
+        "source": "/:path*",
+        "destination": "https://type-challenges-judge.pages.dev/:path",
+        "type": 301
+      },
+      {
+        "source": "/",
+        "destination": "https://type-challenges-judge.pages.dev/",
+        "type": 301
+      }
+    ]
+  },
   "emulators": {
     "auth": {
       "port": 9099
