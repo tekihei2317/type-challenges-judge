@@ -12,7 +12,7 @@
 
 ## 環境構築
 
-- Node.js 16（FirebaseのエミュレータがNode.js 16でないと動かない）
+- Node.js 18
 - sqlc
   - [Installing sqlc — sqlc 1.20.0 documentation](https://docs.sqlc.dev/en/stable/overview/install.html)
 
