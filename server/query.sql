@@ -106,3 +106,28 @@ where
   challenge_result.user_id = ?
 group by
   problem.difficulty;
+
+-- name: calculateRankings :many
+select
+  user.user_id,
+  user.screen_name,
+  accepted_count.accepted_count,
+  rank() over (order by accepted_count.accepted_count desc) as user_rank
+from
+  (
+    select
+      challenge_result.user_id,
+      count(*) as accepted_count
+    from
+      challenge_result
+    where
+      challenge_result.status = 'Accepted'
+    group by
+      challenge_result.user_id
+    order by
+      accepted_count desc
+    limit 100
+  ) accepted_count
+  inner join user
+    on user.user_id = accepted_count.user_id
+;

@@ -110,8 +110,9 @@ export const DefaultLayout = ({ children }: DefaultLayoutProps) => {
             )}
           </Flex>
           <Flex gap={4} mt={4}>
-            <NavigationLink name={'Problems'} path={'/'} />
-            <NavigationLink name={'Progress'} path={'/progress'} />
+            <NavigationLink name="Problems" path="/" />
+            <NavigationLink name="Progress" path="/progress" />
+            <NavigationLink name="Ranking" path="/ranking" />
           </Flex>
         </Container>
       </Box>
