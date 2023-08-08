@@ -1,5 +1,6 @@
 kv_namespaces = [
-  { binding = "PUBLIC_JWK_CACHE_KV", id = "3ba2346afa80424daa438820f4506828", preview_id = "0eb5da7dd9b8483eb3b216cca2a174c8" }
+  { binding = "PUBLIC_JWK_CACHE_KV", id = "3ba2346afa80424daa438820f4506828", preview_id = "0eb5da7dd9b8483eb3b216cca2a174c8" },
+  { binding = "KV", id = "62b19ae2e7b04321834cdfa9db9accf0", preview_id = "1618f22ffb79441ab2e6f6d467327489" }
 ]
 
 services = [

@@ -12,15 +12,17 @@ import {
 import { json, LoaderArgs } from '@remix-run/cloudflare'
 import { useLoaderData } from '@remix-run/react'
 import { fetchRankings } from '../../server/fetch-rankings'
+import { useAuth } from '../hooks/use-auth'
 
 export async function loader({ context }: LoaderArgs) {
-  const rankings = await fetchRankings(context.env.DB)
+  const rankings = await fetchRankings(context.env.DB, context.env.KV)
 
   return json({ rankings })
 }
 
 export default function Ranking() {
   const { rankings } = useLoaderData<typeof loader>()
+  const { user } = useAuth()
 
   return (
     <Container maxW="container.xl" pt={8} pb={16}>
@@ -38,7 +40,12 @@ export default function Ranking() {
           </Thead>
           <Tbody>
             {rankings.map((ranking) => (
-              <Tr key={ranking.userId}>
+              <Tr
+                key={ranking.userId}
+                backgroundColor={
+                  ranking.userId === user?.userId ? 'green.100' : undefined
+                }
+              >
                 <Td>{ranking.userRank}</Td>
                 <Td>{ranking.screenName}</Td>
                 <Td>{ranking.acceptedCount}</Td>

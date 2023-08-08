@@ -6,6 +6,7 @@ declare module '@remix-run/cloudflare' {
   interface AppLoadContext {
     env: {
       DB: D1Database
+      KV: KVNamespace
       JUDGE_WORKER: Fetcher
       FIREBASE_PROJECT_ID: string
       PUBLIC_JWK_CACHE_KEY: string
