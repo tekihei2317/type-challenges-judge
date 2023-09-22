@@ -3,12 +3,14 @@ import {
   ScriptTarget,
   ModuleKind,
   CompilerHost,
+  ResolvedModule,
+  resolveModuleName,
+  createCompilerHost,
   createSourceFile,
   createProgram,
   getPreEmitDiagnostics,
   flattenDiagnosticMessageText,
 } from 'typescript'
-import { es5Lib } from './typescript-lib'
 
 type Diagnostic = string
 
@@ -51,47 +53,45 @@ export function compileSolution(
   testCase: string
 ): Diagnostic[] {
   const sourceFileName = 'solution.ts'
-  const libFileName = 'lib.es5.d.ts'
   const tcUtilsFileName = 'type-challenge-utils.ts'
 
   const options: CompilerOptions = {
     noImplicitAny: true,
     strictNullChecks: true,
+    noImplicitThis: true,
     target: ScriptTarget.ES5,
     module: ModuleKind.CommonJS,
     noEmit: true,
   }
-  const compilerHost: CompilerHost = {
-    getSourceFile: (fileName: string) => {
-      if (fileName === sourceFileName) {
-        return createSourceFile(
-          fileName,
-          [solution, testCase].join('\n'),
-          ScriptTarget.ES5
-        )
+
+  const defaultCompilerHost: CompilerHost = createCompilerHost(options)
+  const compilerHost: CompilerHost = createCompilerHost(options)
+  compilerHost.getSourceFile = (fileName: string) => {
+    if (fileName === sourceFileName) {
+      return createSourceFile(
+        fileName,
+        [solution, testCase].join('\n'),
+        ScriptTarget.ES5
+      )
+    }
+    if (fileName === tcUtilsFileName) {
+      return createSourceFile(fileName, typeChallengeUtils, ScriptTarget.ES5)
+    }
+    return defaultCompilerHost.getSourceFile(fileName, ScriptTarget.ES5)
+  }
+  compilerHost.resolveModuleNames = function(
+    moduleNames: string[],
+    containgFile: string,
+  ): (ResolvedModule | undefined)[] {
+    const resolvedModules: (ResolvedModule | undefined)[] = [];
+    for (const moduleName of moduleNames) {
+      if (moduleName == "@type-challenges/utils") {
+        resolvedModules.push({ resolvedFileName: tcUtilsFileName });
+      } else {
+        resolvedModules.push(resolveModuleName(moduleName, containgFile, options, defaultCompilerHost).resolvedModule);
       }
-      if (fileName === libFileName) {
-        return createSourceFile(fileName, es5Lib, ScriptTarget.ES5)
-      }
-      if (fileName === tcUtilsFileName) {
-        return createSourceFile(fileName, typeChallengeUtils, ScriptTarget.ES5)
-      }
-      return undefined
-    },
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    writeFile: () => {},
-    getCurrentDirectory: () => '',
-    getCanonicalFileName: (fileName: string) => fileName,
-    useCaseSensitiveFileNames: () => false,
-    getNewLine: () => '\n',
-    fileExists: (fileName: string) => {
-      return fileName === sourceFileName
-    },
-    readFile: () => '',
-    getDefaultLibFileName: () => libFileName,
-    resolveModuleNames: () => {
-      return [{ resolvedFileName: tcUtilsFileName }]
-    },
+    }
+    return resolvedModules;
   }
 
   const program = createProgram([sourceFileName], options, compilerHost)
